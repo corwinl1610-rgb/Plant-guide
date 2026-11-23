@@ -1,0 +1,16 @@
+{
+  "name": "Wolfe Nursery Yard Guide",
+  "short_name": "Yard Guide",
+  "start_url": "/Plant-guide/",
+  "scope": "/Plant-guide/",
+  "display": "standalone",
+  "background_color": "#0b1410",
+  "theme_color": "#0b1410",
+  "icons": [
+    {
+      "src": "https://corwinl1610-rgb.github.io/Plant-guide/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
