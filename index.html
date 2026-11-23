@@ -152,13 +152,16 @@
         </div>
       </div>
 
-      <!-- Quick Freeze Status & Settings Button -->
-      <div class="flex items-center gap-2 shrink-0">
-        <button onclick="toggleFreezeMode()" id="headerFreezeBtn" class="px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all active:scale-95 bg-slatecard-800 border-slate-700 text-slate-300">
+      <!-- Freeze, Calculator & Settings Buttons -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button onclick="toggleFreezeMode()" id="headerFreezeBtn" class="px-2.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all active:scale-95 bg-slatecard-800 border-slate-700 text-slate-300">
           <i class="fa-solid fa-snowflake text-sky-400"></i>
-          <span id="headerFreezeText">Freeze: OFF</span>
+          <span id="headerFreezeText" class="hidden sm:inline">Freeze: OFF</span>
         </button>
-        <button onclick="openSettingsModal()" title="Display & House Settings" class="p-2.5 rounded-xl bg-slatecard-800 border border-slate-700 text-amber-400 hover:text-white active:scale-95">
+        <button onclick="openCalcModal()" title="Mulch & Spacing Calculators" class="p-2.5 rounded-xl bg-slatecard-800 border border-slate-700 text-emerald-400 hover:text-white active:scale-95">
+          <i class="fa-solid fa-calculator text-sm"></i>
+        </button>
+        <button onclick="openSettingsModal()" title="Display, Backup & House Settings" class="p-2.5 rounded-xl bg-slatecard-800 border border-slate-700 text-amber-400 hover:text-white active:scale-95">
           <i class="fa-solid fa-gear text-sm"></i>
         </button>
       </div>
@@ -198,7 +201,7 @@
       <!-- Search Input -->
       <div class="relative">
         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-        <input type="text" id="plantSearchInput" oninput="renderPlants()" placeholder="Search plant, bloom color, house, or care tip..." class="w-full bg-slatecard-800 border border-slate-700 focus:border-amber-400 rounded-2xl pl-11 pr-10 py-3.5 text-sm sm:text-base text-white placeholder-slate-400 outline-none shadow-sm" />
+        <input type="text" id="plantSearchInput" oninput="renderPlants()" placeholder="Search plant, bloom color, house, or alternative..." class="w-full bg-slatecard-800 border border-slate-700 focus:border-amber-400 rounded-2xl pl-11 pr-10 py-3.5 text-sm sm:text-base text-white placeholder-slate-400 outline-none shadow-sm" />
         <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1.5">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -207,7 +210,7 @@
       <!-- Filter Pills -->
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="filterPillsContainer">
         <button onclick="setLookupFilter('all')" data-filter="all" class="filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all bg-amber-400 text-slate-950 border-amber-400">
-          All Plants (<span id="count-all">10</span>)
+          All Plants (<span id="count-all">11</span>)
         </button>
         <button onclick="setLookupFilter('hardy')" data-filter="hardy" class="filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all bg-slatecard-800 text-slate-200 border-slate-700">
           <i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i>Zone 7 Hardy
@@ -231,7 +234,7 @@
     </section>
 
     <!-- ========================================================= -->
-    <!-- TAB 2: YARD CARE & WATER                                  -->
+    <!-- TAB 2: YARD CARE, WATER & TROUBLESHOOTER                  -->
     <!-- ========================================================= -->
     <section id="tab-care" class="hidden space-y-4">
       <div id="freezeToggleCard" class="rounded-2xl p-4 border transition-all bg-slatecard-800 border-slate-700 shadow-md">
@@ -257,7 +260,7 @@
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             <div class="bg-sky-950/70 border border-sky-400/25 rounded-xl p-2.5">
-              <span class="font-bold text-white block">Texas Sage (Cenizo) • Zone 8</span>
+              <span class="font-bold text-white block">Texas Sage & Green Cloud • Zone 8</span>
               <span class="text-sky-200">Cover container roots with mulch or frost cloth; avoid heavy wet soil right before deep freeze.</span>
             </div>
             <div class="bg-sky-950/70 border border-sky-400/25 rounded-xl p-2.5">
@@ -293,6 +296,50 @@
       </div>
 
       <div id="careChecklistContainer" class="space-y-4"></div>
+
+      <!-- West Texas Symptom & Pest Troubleshooter -->
+      <div class="bg-slatecard-800 border border-slate-700/90 rounded-2xl overflow-hidden shadow-sm">
+        <div class="bg-forest-900/90 px-4 py-3 border-b border-slate-700/80 flex items-center justify-between">
+          <h3 class="font-extrabold text-xs uppercase tracking-wider text-amber-400 flex items-center gap-2">
+            <i class="fa-solid fa-stethoscope"></i> West Texas Leaf & Pest Troubleshooter
+          </h3>
+          <span class="text-[11px] text-slate-400 font-semibold">Quick Customer Fix</span>
+        </div>
+        <div class="divide-y divide-slate-700/60 text-xs">
+          <div class="p-3.5 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-white text-sm">Yellow Leaves + Dark Green Veins</span>
+              <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">Iron Chlorosis</span>
+            </div>
+            <p class="text-slate-300"><strong>Cause:</strong> High-pH alkaline Lubbock soil locks up iron (common on Red Oaks, Photinias, Hollies).</p>
+            <p class="text-emerald-300 font-semibold"><strong>Fix:</strong> Apply Chelated Iron (EDDHA) + Soil Sulfur, and avoid overwatering.</p>
+          </div>
+          <div class="p-3.5 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-white text-sm">Yellow/Mushy Leaves Dropping on Sage</span>
+              <span class="px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-bold">Overwatering / Root Rot</span>
+            </div>
+            <p class="text-slate-300"><strong>Cause:</strong> Drip irrigation running too often in heavy clay soil on Cenizo, Rosemary, or Lavender.</p>
+            <p class="text-emerald-300 font-semibold"><strong>Fix:</strong> Turn off emitter for 2–3 weeks; let soil dry completely between deep soaks.</p>
+          </div>
+          <div class="p-3.5 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-white text-sm">Fine Webbing & Speckled Dry Leaves</span>
+              <span class="px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 font-bold">Spider Mites</span>
+            </div>
+            <p class="text-slate-300"><strong>Cause:</strong> Hot, dry, dusty West Texas wind (loves Junipers, Roses, Boxwoods, Tomatoes).</p>
+            <p class="text-emerald-300 font-semibold"><strong>Fix:</strong> Blast undersides of leaves with water hose + spray Insecticidal Soap or Neem Oil at dusk.</p>
+          </div>
+          <div class="p-3.5 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-white text-sm">Crispy Brown Leaf Edges on Shade Plants</span>
+              <span class="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 font-bold">Afternoon Sun / Wind Scorch</span>
+            </div>
+            <p class="text-slate-300"><strong>Cause:</strong> Hot west sun or 30+ mph winds drying foliage faster than roots can pull water.</p>
+            <p class="text-emerald-300 font-semibold"><strong>Fix:</strong> Add 3" hardwood mulch over roots, deep-water at base, or move to east/north exposure.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ========================================================= -->
@@ -320,11 +367,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Plant Name *</label>
-            <input type="text" id="newPlantName" placeholder="e.g., Green Cloud Sage" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+            <input type="text" id="newPlantName" placeholder="e.g., Flame Acanthus" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
           </div>
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Botanical Name</label>
-            <input type="text" id="newPlantBotanical" placeholder="e.g., Leucophyllum frutescens" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+            <input type="text" id="newPlantBotanical" placeholder="e.g., Anisacanthus quadrifidus" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
           </div>
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">House Location *</label>
@@ -349,16 +396,22 @@
           </div>
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Blooms & Mature Size</label>
-            <input type="text" id="newPlantBlooms" placeholder="e.g., Purple blooms • 6x6 ft" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+            <input type="text" id="newPlantBlooms" placeholder="e.g., Red-orange tubes • 3x3 ft" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
           </div>
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Initial Count</label>
             <input type="number" id="newPlantCount" value="10" min="0" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
           </div>
         </div>
-        <div>
-          <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">West Texas Care Note</label>
-          <input type="text" id="newPlantTip" placeholder="e.g., Do not overwater in clay soil" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">West Texas Care Note</label>
+            <input type="text" id="newPlantTip" placeholder="e.g., Do not overwater in clay soil" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Good Alternative Swaps</label>
+            <input type="text" id="newPlantAlts" placeholder="e.g., Autumn Sage, Red Yucca" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+          </div>
         </div>
         <div class="flex justify-end gap-2 pt-1">
           <button onclick="toggleAddStockForm()" class="px-4 py-2 rounded-xl bg-slatecard-800 text-slate-300 text-xs font-bold">Cancel</button>
@@ -476,6 +529,29 @@
         </button>
       </div>
 
+      <!-- Optional Plant Photo Snapshot -->
+      <div class="bg-slatecard-800 border border-slate-700/80 rounded-2xl p-3 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <img id="modalPhotoPreview" src="" alt="Plant Snapshot" class="hidden w-16 h-16 rounded-xl object-cover border border-slate-600 shrink-0" />
+          <div id="modalPhotoPlaceholder" class="w-14 h-14 rounded-xl bg-slatecard-900 border border-slate-700 flex items-center justify-center text-slate-500 shrink-0">
+            <i class="fa-solid fa-camera text-lg"></i>
+          </div>
+          <div class="min-w-0">
+            <span class="text-xs font-bold text-white block">Tag / Bloom Snapshot</span>
+            <span class="text-[11px] text-slate-400 block truncate">Saved locally on this phone</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <label class="px-3 py-2 rounded-xl bg-slatecard-700 hover:bg-slate-600 text-xs font-bold text-amber-400 cursor-pointer active:scale-95">
+            <i class="fa-solid fa-camera mr-1"></i> Photo
+            <input type="file" accept="image/*" capture="environment" onchange="handlePlantPhotoUpload(event)" class="hidden" />
+          </label>
+          <button id="modalRemovePhotoBtn" onclick="removePlantPhoto()" class="hidden px-2.5 py-2 rounded-xl bg-red-950/60 text-red-300 text-xs font-bold">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
       <div id="modalFreezeWarning" class="hidden bg-sky-950/90 border border-sky-400/40 rounded-2xl p-3 flex items-start gap-2.5">
         <i class="fa-solid fa-snowflake text-sky-400 mt-0.5"></i>
         <div class="text-xs">
@@ -503,11 +579,19 @@
         </div>
       </div>
 
-      <div class="bg-forest-900/80 border border-emerald-500/30 rounded-2xl p-3.5">
-        <h4 class="text-xs font-extrabold uppercase tracking-wider text-amber-400 mb-1">
-          <i class="fa-solid fa-lightbulb mr-1"></i> West Texas Care Tip
-        </h4>
-        <p id="modalCareTip" class="text-sm text-slate-100 leading-relaxed"></p>
+      <div class="bg-forest-900/80 border border-emerald-500/30 rounded-2xl p-3.5 space-y-2">
+        <div>
+          <h4 class="text-xs font-extrabold uppercase tracking-wider text-amber-400 mb-1">
+            <i class="fa-solid fa-lightbulb mr-1"></i> West Texas Care Tip
+          </h4>
+          <p id="modalCareTip" class="text-sm text-slate-100 leading-relaxed"></p>
+        </div>
+        <div class="pt-2 border-t border-emerald-500/20">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-300 block mb-0.5">
+            <i class="fa-solid fa-repeat mr-1"></i> Safe West Texas Alternatives
+          </span>
+          <p id="modalAlternatives" class="text-xs text-slate-200 font-semibold"></p>
+        </div>
       </div>
 
       <div class="bg-slatecard-800 border border-slate-700 rounded-2xl p-3.5 flex items-center justify-between">
@@ -533,15 +617,92 @@
     </div>
   </div>
 
-  <!-- Settings & Personalization Modal -->
+  <!-- Customer Quick-Calculators Modal (Mulch, Soil & Spacing) -->
+  <div id="calcModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4" onclick="closeCalcModal(event)">
+    <div class="bg-slatecard-900 border-t sm:border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-5 max-h-[90vh] overflow-y-auto space-y-5 animate-slide-up shadow-2xl" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-calculator text-emerald-400"></i> Customer Yard Calculators
+          </h3>
+          <p class="text-xs text-slate-400">Instant mulch bags & hedge spacing math</p>
+        </div>
+        <button onclick="forceCloseCalcModal()" class="w-9 h-9 rounded-full bg-slatecard-800 text-slate-300 hover:text-white flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Mulch & Soil Bed Calculator -->
+      <div class="bg-slatecard-800 border border-slate-700 rounded-2xl p-4 space-y-3">
+        <h4 class="text-xs font-extrabold uppercase tracking-wider text-amber-400">1. Mulch & Soil Bag Calculator</h4>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-300 mb-1">Length (ft)</label>
+            <input type="number" id="calcLength" value="20" min="0" oninput="recalcMulch()" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-300 mb-1">Width (ft)</label>
+            <input type="number" id="calcWidth" value="4" min="0" oninput="recalcMulch()" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-300 mb-1">Depth (in)</label>
+            <input type="number" id="calcDepth" value="3" min="0" oninput="recalcMulch()" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 pt-1 text-center">
+          <div class="bg-slatecard-900 border border-slate-700/80 rounded-xl p-2.5">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">2 cu. ft. Bags</span>
+            <span id="resBags2" class="text-lg font-extrabold text-amber-400">10</span>
+          </div>
+          <div class="bg-slatecard-900 border border-slate-700/80 rounded-xl p-2.5">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">3 cu. ft. Bags</span>
+            <span id="resBags3" class="text-lg font-extrabold text-emerald-400">7</span>
+          </div>
+          <div class="bg-slatecard-900 border border-slate-700/80 rounded-xl p-2.5">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">Cubic Yards</span>
+            <span id="resYards" class="text-lg font-extrabold text-white">0.74</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hedge & Border Spacing Calculator -->
+      <div class="bg-slatecard-800 border border-slate-700 rounded-2xl p-4 space-y-3">
+        <h4 class="text-xs font-extrabold uppercase tracking-wider text-emerald-400">2. Hedge & Border Spacing Calculator</h4>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-300 mb-1">Row / Fence Length (ft)</label>
+            <input type="number" id="spaceLength" value="30" min="0" oninput="recalcSpacing()" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-300 mb-1">Plant Spacing (ft)</label>
+            <input type="number" id="spaceGap" value="3" min="0.5" step="0.5" oninput="recalcSpacing()" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-1 text-center">
+          <div class="bg-slatecard-900 border border-slate-700/80 rounded-xl p-2.5">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">Single Straight Row</span>
+            <span id="resRowSingle" class="text-lg font-extrabold text-emerald-400">11 plants</span>
+          </div>
+          <div class="bg-slatecard-900 border border-slate-700/80 rounded-xl p-2.5">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">Double Staggered Hedge</span>
+            <span id="resRowDouble" class="text-lg font-extrabold text-amber-400">21 plants</span>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="forceCloseCalcModal()" class="w-full py-2.5 rounded-xl bg-slatecard-800 border border-slate-700 text-slate-200 text-xs font-extrabold">Close Calculator</button>
+    </div>
+  </div>
+
+  <!-- Settings, Backup & Personalization Modal -->
   <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4" onclick="closeSettingsModal(event)">
     <div class="bg-slatecard-900 border-t sm:border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-5 max-h-[90vh] overflow-y-auto space-y-5 animate-slide-up shadow-2xl" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between">
         <div>
           <h3 class="text-lg font-extrabold text-white flex items-center gap-2">
-            <i class="fa-solid fa-sliders text-amber-400"></i> Display & House Settings
+            <i class="fa-solid fa-sliders text-amber-400"></i> Display, Houses & Backup
           </h3>
-          <p class="text-xs text-slate-400">Customize text size, color contrast, and official house names</p>
+          <p class="text-xs text-slate-400">Text size, contrast modes, official houses & data backup</p>
         </div>
         <button onclick="forceCloseSettingsModal()" class="w-9 h-9 rounded-full bg-slatecard-800 text-slate-300 hover:text-white flex items-center justify-center">
           <i class="fa-solid fa-xmark"></i>
@@ -585,13 +746,31 @@
           <input type="text" id="newHouseInput" placeholder="e.g., House 1 • Perennials" class="flex-1 bg-slatecard-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-amber-400">
           <button onclick="addCustomHouse()" class="px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-extrabold text-xs shrink-0 active:scale-95">Add House</button>
         </div>
-        <div id="housesListContainer" class="space-y-1.5 max-h-44 overflow-y-auto pr-1"></div>
+        <div id="housesListContainer" class="space-y-1.5 max-h-40 overflow-y-auto pr-1"></div>
+      </div>
+
+      <!-- One-Tap Backup & Restore -->
+      <div class="bg-slatecard-800 border border-slate-700 rounded-2xl p-3.5 space-y-2.5">
+        <label class="block text-xs font-extrabold uppercase tracking-wider text-emerald-400">Phone Data Backup & Restore</label>
+        <p class="text-xs text-slate-400">Copy your custom plants & House names to your Notes app so you never lose edits.</p>
+        <div class="flex gap-2">
+          <button onclick="copyBackupCode()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-extrabold active:scale-95">
+            <i class="fa-solid fa-copy mr-1"></i> Copy Backup Code
+          </button>
+          <button onclick="toggleRestoreBox()" class="flex-1 py-2.5 rounded-xl bg-slatecard-700 border border-slate-600 text-slate-200 text-xs font-extrabold active:scale-95">
+            <i class="fa-solid fa-file-import mr-1"></i> Restore Code
+          </button>
+        </div>
+        <div id="restoreBox" class="hidden space-y-2 pt-1">
+          <textarea id="restoreCodeInput" rows="3" placeholder="Paste saved backup code here..." class="w-full bg-slatecard-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white outline-none focus:border-amber-400"></textarea>
+          <button onclick="applyBackupRestore()" class="w-full py-2 rounded-xl bg-amber-400 text-slate-950 text-xs font-extrabold">Load Backup</button>
+        </div>
       </div>
 
       <!-- Reset Button -->
-      <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+      <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
         <button onclick="openResetConfirm()" class="px-3.5 py-2 rounded-xl bg-slatecard-800 border border-slate-700 text-slate-300 text-xs font-bold">
-          <i class="fa-solid fa-rotate-right mr-1"></i> Reset Default Data
+          <i class="fa-solid fa-rotate-right mr-1"></i> Reset Defaults
         </button>
         <button onclick="forceCloseSettingsModal()" class="px-5 py-2.5 rounded-xl bg-emerald-500 text-slate-950 text-xs font-extrabold">Save & Close</button>
       </div>
@@ -622,17 +801,17 @@
     ];
 
     const DEFAULT_PLANTS = [
-      { id: 'autumn-sage', commonName: 'Autumn Sage', botanicalName: 'Salvia greggii', zone: 'Zone 5-9', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'drought'], freezeSensitive: false, freezeNote: 'Root hardy in Zone 7; cut back woody stems in late February rather than fall.', bay: 'House 1 • Perennials', sunSoil: 'Full Sun (6+ hrs) • Well-drained soil (hates soggy clay)', water: '2x/week first month, then every 7–10 days once rooted', blooms: 'Red, pink, coral, or white blooms • Spring through first hard freeze', size: '2–3 ft tall × 2–3 ft wide', careTip: 'West Texas hummingbird magnet. Never overwater in winter—wet clay soil causes root rot faster than cold weather.', stock: 18 },
-      { id: 'texas-sage', commonName: 'Texas Sage (Cenizo)', botanicalName: 'Leucophyllum frutescens', zone: 'Zone 8 • Borderline', hardinessStatus: 'borderline', tags: ['full-sun', 'drought', 'freeze'], freezeSensitive: true, freezeNote: 'Zone 8 borderline in Lubbock—plant near south/west brick walls and cover containers with frost cloth below 22°F.', bay: 'House 2 • Native Shrubs & Herbs', sunSoil: 'Full Blazing Sun • Rocky, alkaline, fast-draining soil', water: 'Almost none once established (every 2–3 weeks in peak summer)', blooms: 'Purple-magenta flowers • Erupts right before or after rainstorms', size: '4–6 ft tall × 4–6 ft wide', careTip: 'Called the "Barometer Bush" because humidity triggers blooms. Overwatering is the #1 killer of Cenizo.', stock: 9 },
-      { id: 'green-cloud-sage', commonName: 'Green Cloud Sage', botanicalName: "Leucophyllum frutescens 'Green Cloud'", zone: 'Zone 8-10 • Borderline', hardinessStatus: 'borderline', tags: ['full-sun', 'drought', 'freeze'], freezeSensitive: true, freezeNote: 'Handles Lubbock winters once established; protect young containers below 20°F.', bay: 'House 2 • Native Shrubs & Herbs', sunSoil: 'Full Sun (6+ hrs) • Fast-draining alkaline or rocky soil', water: 'Very low once rooted; deep soak every 1–2 weeks first summer', blooms: 'Bright magenta-purple bell flowers • Summer through fall after rain', size: '6–8 ft tall × 6–8 ft wide', careTip: 'Emerald-green foliage variety of Texas Sage. Hand-prune lightly in late winter—avoid shearing into tight balls.', stock: 12 },
-      { id: 'red-yucca', commonName: 'Red Yucca', botanicalName: 'Hesperaloe parviflora', zone: 'Zone 5-10', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'drought'], freezeSensitive: false, freezeNote: 'Bulletproof in West Texas freezes—no covering required.', bay: 'House 2 • Native Shrubs & Herbs', sunSoil: 'Full Sun • Handles tough Lubbock caliche & alkaline soil', water: 'Every 2–3 weeks in summer; zero supplemental water in winter', blooms: 'Tall coral-red flower spikes • Late spring through summer', size: '3–4 ft foliage • 5 ft bloom stalks', careTip: 'Zero sharp spines despite the name, making it safe next to sidewalks and driveways. Thrives on pure neglect.', stock: 14 },
-      { id: 'black-eyed-susan', commonName: 'Black-Eyed Susan', botanicalName: 'Rudbeckia fulgida', zone: 'Zone 3-9', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun'], freezeSensitive: false, freezeNote: 'Dies back cleanly to the crown after freeze and returns thicker every spring.', bay: 'House 1 • Perennials', sunSoil: 'Full Sun to light afternoon shade • Average garden soil', water: '2x/week until established, then 1x/week in summer heat', blooms: 'Golden-yellow petals with dark centers • Summer to fall', size: '2–3 ft tall × 1.5–2 ft wide', careTip: 'Deadhead spent blooms in July for a massive second wave of color. Great for beginner gardeners.', stock: 11 },
-      { id: 'upright-rosemary', commonName: 'Upright Rosemary', botanicalName: 'Salvia rosmarinus', zone: 'Zone 7-8 • Protect', hardinessStatus: 'borderline', tags: ['full-sun', 'drought', 'freeze'], freezeSensitive: true, freezeNote: 'Can burn in single-digit Lubbock cold snaps. Move nursery pots inside greenhouse when temps drop below 20°F.', bay: 'House 2 • Native Shrubs & Herbs', sunSoil: 'Full Sun • Fast-draining sandy or amended soil', water: 'Let top 2–3 inches of soil dry out completely between waterings', blooms: 'Tiny pale blue flowers • Late winter to spring (evergreen foliage)', size: '3–5 ft tall × 2–4 ft wide', careTip: 'Aromatic evergreen shrub that doubles as a kitchen herb. Needs good drainage—wet roots in winter will rot it.', stock: 3 },
-      { id: 'garden-mums', commonName: 'Garden Mums', botanicalName: 'Chrysanthemum morifolium', zone: 'Zone 5-9 • Cool Season', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'freeze'], freezeSensitive: true, freezeNote: 'Water pots thoroughly 24 hrs before a freeze (moist soil insulates roots); cover blooms if frost hits.', bay: 'Front Table • Seasonal Color', sunSoil: 'Full Sun • Rich, well-drained potting or garden soil', water: 'Keep evenly moist (2–3x/week in pots; 1–2x/week in ground)', blooms: 'Bronze, yellow, burgundy, purple, white • Heavy fall color', size: '1.5–2 ft tall × 2 ft wide', careTip: 'Water at the base rather than overhead so blooms stay crisp and avoid fungal spots.', stock: 22 },
-      { id: 'live-oak', commonName: 'Live Oak', botanicalName: 'Quercus virginiana', zone: 'Zone 7-10', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'drought'], freezeSensitive: false, freezeNote: 'Evergreen oak hardy to Zone 7; may drop old leaves during extreme cold snaps before pushing fresh green growth.', bay: 'Tree Lot • Row 1', sunSoil: 'Full Sun • Adapts to alkaline West Texas soil', water: '10 gal/week per inch of trunk diameter for first 2 years', blooms: 'Evergreen canopy • Produces acorns in fall', size: '40–50 ft tall × 50–70 ft wide', careTip: 'Premier long-lived West Texas shade tree. Always apply 3 inches of mulch in a wide ring—never piled against trunk bark.', stock: 6 },
-      { id: 'red-oak', commonName: 'Shumard Red Oak', botanicalName: 'Quercus shumardii', zone: 'Zone 5-9', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'drought'], freezeSensitive: false, freezeNote: 'Extremely cold-hardy shade tree; zero freeze worry in Lubbock.', bay: 'Tree Lot • Row 2', sunSoil: 'Full Sun • Deep, well-drained soil (tolerates alkaline clay)', water: 'Deep soak 2x/week first summer, then 1x/week', blooms: 'Brilliant scarlet-red fall foliage', size: '45–60 ft tall × 35–45 ft wide', careTip: 'Faster growing than Live Oak with dependable West Texas fall color. Avoid high-pH iron chlorosis by adding sulfur/compost at planting.', stock: 8 },
-      { id: 'elberta-peach', commonName: 'Elberta Peach Tree', botanicalName: 'Prunus persica "Elberta"', zone: 'Zone 5-8', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun'], freezeSensitive: false, freezeNote: 'Tree itself is hardy to -10°F, though late March/April blossoms can be nipped by spring frost.', bay: 'Fruit Yard • Row 4', sunSoil: 'Full Sun • Avoid low-lying frost pockets where cold air settles', water: 'Deep soak 1–2x/week during spring/summer fruit swell', blooms: 'Showy pink spring blossoms • Freestone yellow peaches in July/Aug', size: '12–15 ft tall × 12–15 ft wide', careTip: 'Self-fertile (only needs 1 tree!). Prune to an open-center vase shape in late winter so sunlight ripens the fruit.', stock: 2 },
-      { id: 'hydrangea', commonName: 'Endless Summer Hydrangea', botanicalName: 'Hydrangea macrophylla', zone: 'Zone 4-9 • Shade Only', hardinessStatus: 'hardy', tags: ['hardy', 'shade', 'freeze'], freezeSensitive: true, freezeNote: 'Root hardy, but late freezes kill tender spring buds—cover with frost cloth on freezing nights.', bay: 'Shade House • Bench 2', sunSoil: 'Morning Sun + Strict Afternoon Shade • Rich, mulched soil', water: '2–3x/week in summer; never let root ball dry out completely', blooms: 'Large blue or pink mophead blooms • Late spring through summer', size: '3–5 ft tall × 3–5 ft wide', careTip: 'CRITICAL FOR LUBBOCK: Will scorch in afternoon sun even if watered daily. Must go on the north or east side of a house.', stock: 3 }
+      { id: 'autumn-sage', commonName: 'Autumn Sage', botanicalName: 'Salvia greggii', zone: 'Zone 5-9', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'drought'], freezeSensitive: false, freezeNote: 'Root hardy in Zone 7; cut back woody stems in late February rather than fall.', bay: 'House 1 • Perennials', sunSoil: 'Full Sun (6+ hrs) • Well-drained soil (hates soggy clay)', water: '2x/week first month, then every 7–10 days once rooted', blooms: 'Red, pink, coral, or white blooms • Spring through first hard freeze', size: '2–3 ft tall × 2–3 ft wide', careTip: 'West Texas hummingbird magnet. Never overwater in winter—wet clay soil causes root rot faster than cold weather.', alternatives: 'Flame Acanthus, Blackfoot Daisy, Mealy Blue Sage', stock: 18, photo: '' },
+      { id: 'texas-sage', commonName: 'Texas Sage (Cenizo)', botanicalName: 'Leucophyllum frutescens', zone: 'Zone 8 • Borderline', hardinessStatus: 'borderline', tags: ['full-sun', 'drought', 'freeze'], freezeSensitive: true, freezeNote: 'Zone 8 borderline in Lubbock—plant near south/west brick walls and cover containers with frost cloth below 22°F.', bay: 'House 2 • Native Shrubs & Herbs', sunSoil: 'Full Blazing Sun • Rocky, alkaline, fast-draining soil', water: 'Almost none once established (every 2–3 weeks in peak summer)', blooms: 'Purple-magenta flowers • Erupts right before or after rainstorms', size: '4–6 ft tall × 4–6 ft wide', careTip: 'Called the "Barometer Bush" because humidity triggers blooms. Overwatering is the #1 killer of Cenizo.', alternatives: 'Green Cloud Sage, Lynn’s Legacy Sage, Red Yucca', stock: 9, photo: '' },
+      { id: 'green-cloud-sage', commonName: 'Green Cloud Sage', botanicalName: "Leucophyllum frutescens 'Green Cloud'", zone: 'Zone 8-10 • Borderline', hardinessStatus: 'borderline', tags: ['full-sun', 'drought', 'freeze'], freezeSensitive: true, freezeNote: 'Handles Lubbock winters once established; protect young containers below 20°F.', bay: 'House 2 • Native Shrubs & Herbs', sunSoil: 'Full Sun (6+ hrs) • Fast-draining alkaline or rocky soil', water: 'Very low once rooted; deep soak every 1–2 weeks first summer', blooms: 'Bright magenta-purple bell flowers • Summer through fall after rain', size: '6–8 ft tall × 6–8 ft wide', careTip: 'Emerald-green foliage variety of Texas Sage. Hand-prune lightly in late winter—avoid shearing into tight balls.', alternatives: 'Texas Sage (Cenizo), Autumn Sage, Apache Plume', stock: 12, photo: '' },
+      { id: 'red-yucca', commonName: 'Red Yucca', botanicalName: 'Hesperaloe parviflora', zone: 'Zone 5-10', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'drought'], freezeSensitive: false, freezeNote: 'Bulletproof in West Texas freezes—no covering required.', bay: 'House 2 • Native Shrubs & Herbs', sunSoil: 'Full Sun • Handles tough Lubbock caliche & alkaline soil', water: 'Every 2–3 weeks in summer; zero supplemental water in winter', blooms: 'Tall coral-red flower spikes • Late spring through summer', size: '3–4 ft foliage • 5 ft bloom stalks', careTip: 'Zero sharp spines despite the name, making it safe next to sidewalks and driveways. Thrives on pure neglect.', alternatives: 'Yellow Yucca, Sotol, Autumn Sage', stock: 14, photo: '' },
+      { id: 'black-eyed-susan', commonName: 'Black-Eyed Susan', botanicalName: 'Rudbeckia fulgida', zone: 'Zone 3-9', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun'], freezeSensitive: false, freezeNote: 'Dies back cleanly to the crown after freeze and returns thicker every spring.', bay: 'House 1 • Perennials', sunSoil: 'Full Sun to light afternoon shade • Average garden soil', water: '2x/week until established, then 1x/week in summer heat', blooms: 'Golden-yellow petals with dark centers • Summer to fall', size: '2–3 ft tall × 1.5–2 ft wide', careTip: 'Deadhead spent blooms in July for a massive second wave of color. Great for beginner gardeners.', alternatives: 'Purple Coneflower, Blanket Flower (Gaillardia), Coreopsis', stock: 11, photo: '' },
+      { id: 'upright-rosemary', commonName: 'Upright Rosemary', botanicalName: 'Salvia rosmarinus', zone: 'Zone 7-8 • Protect', hardinessStatus: 'borderline', tags: ['full-sun', 'drought', 'freeze'], freezeSensitive: true, freezeNote: 'Can burn in single-digit Lubbock cold snaps. Move nursery pots inside greenhouse when temps drop below 20°F.', bay: 'House 2 • Native Shrubs & Herbs', sunSoil: 'Full Sun • Fast-draining sandy or amended soil', water: 'Let top 2–3 inches of soil dry out completely between waterings', blooms: 'Tiny pale blue flowers • Late winter to spring (evergreen foliage)', size: '3–5 ft tall × 2–4 ft wide', careTip: 'Aromatic evergreen shrub that doubles as a kitchen herb. Needs good drainage—wet roots in winter will rot it.', alternatives: 'Arp Rosemary (hardier), English Lavender, Germander', stock: 3, photo: '' },
+      { id: 'garden-mums', commonName: 'Garden Mums', botanicalName: 'Chrysanthemum morifolium', zone: 'Zone 5-9 • Cool Season', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'freeze'], freezeSensitive: true, freezeNote: 'Water pots thoroughly 24 hrs before a freeze (moist soil insulates roots); cover blooms if frost hits.', bay: 'Front Table • Seasonal Color', sunSoil: 'Full Sun • Rich, well-drained potting or garden soil', water: 'Keep evenly moist (2–3x/week in pots; 1–2x/week in ground)', blooms: 'Bronze, yellow, burgundy, purple, white • Heavy fall color', size: '1.5–2 ft tall × 2 ft wide', careTip: 'Water at the base rather than overhead so blooms stay crisp and avoid fungal spots.', alternatives: 'Fall Asters, Ornamental Kale/Cabbage, Pansies', stock: 22, photo: '' },
+      { id: 'live-oak', commonName: 'Live Oak', botanicalName: 'Quercus virginiana', zone: 'Zone 7-10', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'drought'], freezeSensitive: false, freezeNote: 'Evergreen oak hardy to Zone 7; may drop old leaves during extreme cold snaps before pushing fresh green growth.', bay: 'Tree Lot • Row 1', sunSoil: 'Full Sun • Adapts to alkaline West Texas soil', water: '10 gal/week per inch of trunk diameter for first 2 years', blooms: 'Evergreen canopy • Produces acorns in fall', size: '40–50 ft tall × 50–70 ft wide', careTip: 'Premier long-lived West Texas shade tree. Always apply 3 inches of mulch in a wide ring—never piled against trunk bark.', alternatives: 'Chinquapin Oak, Bur Oak, Cedar Elm', stock: 6, photo: '' },
+      { id: 'red-oak', commonName: 'Shumard Red Oak', botanicalName: 'Quercus shumardii', zone: 'Zone 5-9', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun', 'drought'], freezeSensitive: false, freezeNote: 'Extremely cold-hardy shade tree; zero freeze worry in Lubbock.', bay: 'Tree Lot • Row 2', sunSoil: 'Full Sun • Deep, well-drained soil (tolerates alkaline clay)', water: 'Deep soak 2x/week first summer, then 1x/week', blooms: 'Brilliant scarlet-red fall foliage', size: '45–60 ft tall × 35–45 ft wide', careTip: 'Faster growing than Live Oak with dependable West Texas fall color. Avoid high-pH iron chlorosis by adding sulfur/compost at planting.', alternatives: 'Texas Red Oak, Chinese Pistache, Cedar Elm', stock: 8, photo: '' },
+      { id: 'elberta-peach', commonName: 'Elberta Peach Tree', botanicalName: 'Prunus persica "Elberta"', zone: 'Zone 5-8', hardinessStatus: 'hardy', tags: ['hardy', 'full-sun'], freezeSensitive: false, freezeNote: 'Tree itself is hardy to -10°F, though late March/April blossoms can be nipped by spring frost.', bay: 'Fruit Yard • Row 4', sunSoil: 'Full Sun • Avoid low-lying frost pockets where cold air settles', water: 'Deep soak 1–2x/week during spring/summer fruit swell', blooms: 'Showy pink spring blossoms • Freestone yellow peaches in July/Aug', size: '12–15 ft tall × 12–15 ft wide', careTip: 'Self-fertile (only needs 1 tree!). Prune to an open-center vase shape in late winter so sunlight ripens the fruit.', alternatives: 'Redhaven Peach, Santa Rosa Plum, Kieffer Pear', stock: 2, photo: '' },
+      { id: 'hydrangea', commonName: 'Endless Summer Hydrangea', botanicalName: 'Hydrangea macrophylla', zone: 'Zone 4-9 • Shade Only', hardinessStatus: 'hardy', tags: ['hardy', 'shade', 'freeze'], freezeSensitive: true, freezeNote: 'Root hardy, but late freezes kill tender spring buds—cover with frost cloth on freezing nights.', bay: 'Shade House • Bench 2', sunSoil: 'Morning Sun + Strict Afternoon Shade • Rich, mulched soil', water: '2–3x/week in summer; never let root ball dry out completely', blooms: 'Large blue or pink mophead blooms • Late spring through summer', size: '3–5 ft tall × 3–5 ft wide', careTip: 'CRITICAL FOR LUBBOCK: Will scorch in afternoon sun even if watered daily. Must go on the north or east side of a house.', alternatives: 'Oakleaf Hydrangea, Hostas, Heuchera (Coral Bells)', stock: 3, photo: '' }
     ];
 
     const DEFAULT_CARE_TASKS = [
@@ -655,7 +834,7 @@
       { id: 'ticket-2', customer: 'Walk-In • Mrs. Henderson', vehicle: 'White SUV • Front Loading', items: '4x Garden Mums, 2x Black-Eyed Susan, 2 bags Soil', status: 'Staged', time: '10:40 AM' }
     ];
 
-    const STORAGE_KEY = 'lubbock_yard_guide_v2';
+    const STORAGE_KEY = 'lubbock_yard_guide_v3';
     let appState = {
       activeTab: 'lookup',
       lookupFilter: 'all',
@@ -673,7 +852,7 @@
 
     function loadState() {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
+        const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('lubbock_yard_guide_v2');
         if (saved) {
           const parsed = JSON.parse(saved);
           appState = { ...appState, ...parsed };
@@ -688,7 +867,43 @@
     }
 
     // =========================================================================
-    // DISPLAY & ACCESSIBILITY SETTINGS
+    // CALCULATORS (MULCH, SOIL & HEDGE SPACING)
+    // =========================================================================
+    function openCalcModal() {
+      recalcMulch();
+      recalcSpacing();
+      document.getElementById('calcModal').classList.remove('hidden');
+    }
+
+    function closeCalcModal(e) {
+      if (e.target.id === 'calcModal') forceCloseCalcModal();
+    }
+
+    function forceCloseCalcModal() {
+      document.getElementById('calcModal').classList.add('hidden');
+    }
+
+    function recalcMulch() {
+      const l = parseFloat(document.getElementById('calcLength').value) || 0;
+      const w = parseFloat(document.getElementById('calcWidth').value) || 0;
+      const d = parseFloat(document.getElementById('calcDepth').value) || 0;
+      const cuFt = l * w * (d / 12);
+      document.getElementById('resBags2').textContent = Math.ceil(cuFt / 2);
+      document.getElementById('resBags3').textContent = Math.ceil(cuFt / 3);
+      document.getElementById('resYards').textContent = (cuFt / 27).toFixed(2);
+    }
+
+    function recalcSpacing() {
+      const len = parseFloat(document.getElementById('spaceLength').value) || 0;
+      const gap = parseFloat(document.getElementById('spaceGap').value) || 1;
+      const single = len > 0 ? Math.floor(len / gap) + 1 : 0;
+      const doubleRow = single > 0 ? (single * 2) - 1 : 0;
+      document.getElementById('resRowSingle').textContent = `${single} plants`;
+      document.getElementById('resRowDouble').textContent = `${doubleRow} plants`;
+    }
+
+    // =========================================================================
+    // DISPLAY, HOUSES & BACKUP SETTINGS
     // =========================================================================
     function applyAppearanceSettings() {
       const html = document.documentElement;
@@ -744,6 +959,42 @@
 
     function forceCloseSettingsModal() {
       document.getElementById('settingsModal').classList.add('hidden');
+    }
+
+    function copyBackupCode() {
+      const backupPayload = JSON.stringify({
+        houses: appState.houses,
+        plants: appState.plants.map(p => ({ ...p, photo: '' })) // omit heavy base64 images for clean text copy
+      });
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(backupPayload)
+          .then(() => showToast('Backup copied! Paste it into your Notes app.'))
+          .catch(() => showToast('Could not auto-copy—try again', 'fa-triangle-exclamation text-amber-400'));
+      } else {
+        showToast('Clipboard unavailable in this browser', 'fa-triangle-exclamation text-amber-400');
+      }
+    }
+
+    function toggleRestoreBox() {
+      document.getElementById('restoreBox').classList.toggle('hidden');
+    }
+
+    function applyBackupRestore() {
+      const raw = document.getElementById('restoreCodeInput').value.trim();
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.plants)) appState.plants = parsed.plants;
+        if (Array.isArray(parsed.houses) && parsed.houses.length) appState.houses = parsed.houses;
+        saveState();
+        renderAll();
+        renderHousesManager();
+        document.getElementById('restoreCodeInput').value = '';
+        toggleRestoreBox();
+        showToast('Backup restored successfully!');
+      } catch (e) {
+        showToast('Invalid backup code format', 'fa-triangle-exclamation text-amber-400');
+      }
     }
 
     function populateHouseDropdowns(selectedValue = '') {
@@ -872,7 +1123,7 @@
       const careBadge = document.getElementById('careBadge');
 
       if (isOn) {
-        headerBtn.className = 'px-3 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 border transition-all active:scale-95 bg-sky-500/20 border-sky-400 text-sky-300 shadow-sm';
+        headerBtn.className = 'px-2.5 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 border transition-all active:scale-95 bg-sky-500/20 border-sky-400 text-sky-300 shadow-sm';
         headerText.textContent = 'Freeze: ON';
         lookupBanner.classList.remove('hidden');
         toggleCard.className = 'rounded-2xl p-4 border transition-all bg-sky-950/60 border-sky-400/50 shadow-lg';
@@ -881,7 +1132,7 @@
         protocolBox.classList.remove('hidden');
         careBadge.classList.remove('hidden');
       } else {
-        headerBtn.className = 'px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all active:scale-95 bg-slatecard-800 border-slate-700 text-slate-300';
+        headerBtn.className = 'px-2.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all active:scale-95 bg-slatecard-800 border-slate-700 text-slate-300';
         headerText.textContent = 'Freeze: OFF';
         lookupBanner.classList.add('hidden');
         toggleCard.className = 'rounded-2xl p-4 border transition-all bg-slatecard-800 border-slate-700 shadow-md';
@@ -924,7 +1175,7 @@
           if (appState.lookupFilter !== 'freeze' && !p.tags.includes(appState.lookupFilter)) return false;
         }
         if (query) {
-          const haystack = `${p.commonName} ${p.botanicalName} ${p.zone} ${p.bay} ${p.sunSoil} ${p.blooms} ${p.careTip}`.toLowerCase();
+          const haystack = `${p.commonName} ${p.botanicalName} ${p.zone} ${p.bay} ${p.sunSoil} ${p.blooms} ${p.careTip} ${p.alternatives || ''}`.toLowerCase();
           return haystack.includes(query);
         }
         return true;
@@ -954,18 +1205,21 @@
         return `
           <div onclick="openPlantModal('${plant.id}')" class="rounded-2xl p-4 border ${freezeHighlight} hover:border-amber-400/60 transition-all cursor-pointer active:scale-[0.99] shadow-sm space-y-3">
             <div class="flex items-start justify-between gap-2">
-              <div>
-                <div class="flex flex-wrap items-center gap-1.5 mb-1">
-                  <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${zoneBadgeClass}">
-                    ${isHardy ? '✓ ' : '⚠ '}${plant.zone}
-                  </span>
-                  ${plant.freezeSensitive ? `
-                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
-                      <i class="fa-solid fa-snowflake mr-1"></i>Freeze Watch
-                    </span>` : ''}
+              <div class="flex items-start gap-3 min-w-0">
+                ${plant.photo ? `<img src="${plant.photo}" alt="" class="w-12 h-12 rounded-xl object-cover border border-slate-600 shrink-0 mt-0.5">` : ''}
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                    <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${zoneBadgeClass}">
+                      ${isHardy ? '✓ ' : '⚠ '}${plant.zone}
+                    </span>
+                    ${plant.freezeSensitive ? `
+                      <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                        <i class="fa-solid fa-snowflake mr-1"></i>Freeze Watch
+                      </span>` : ''}
+                  </div>
+                  <h3 class="font-extrabold text-base sm:text-lg text-white leading-snug">${plant.commonName}</h3>
+                  <p class="text-xs italic text-slate-400 truncate">${plant.botanicalName} • <span class="not-italic text-slate-300 font-semibold">${plant.bay}</span></p>
                 </div>
-                <h3 class="font-extrabold text-base sm:text-lg text-white leading-snug">${plant.commonName}</h3>
-                <p class="text-xs italic text-slate-400">${plant.botanicalName} • <span class="not-italic text-slate-300 font-semibold">${plant.bay}</span></p>
               </div>
               <div class="shrink-0 text-right">
                 <div class="px-2.5 py-1 rounded-xl border ${lowStock ? 'bg-amber-500/20 border-amber-400/50 text-amber-300' : 'bg-forest-900 border-emerald-500/30 text-emerald-300'}">
@@ -987,7 +1241,7 @@
             <div class="flex items-center justify-between gap-2 text-xs pt-0.5">
               <span class="text-slate-300 truncate"><i class="fa-solid fa-spa text-pink-400 mr-1.5"></i>${plant.blooms}</span>
               <span class="shrink-0 font-bold text-amber-400 flex items-center gap-1">
-                Edit & Stock <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                Details <i class="fa-solid fa-chevron-right text-[10px]"></i>
               </span>
             </div>
           </div>`;
@@ -995,7 +1249,7 @@
     }
 
     // =========================================================================
-    // PLANT DETAIL MODAL & STOCK/HOUSE ADJUSTMENT
+    // PLANT DETAIL MODAL, PHOTO SNAPSHOTS & STOCK/HOUSE ADJUSTMENT
     // =========================================================================
     function openPlantModal(plantId) {
       const plant = appState.plants.find(p => p.id === plantId);
@@ -1013,6 +1267,8 @@
       document.getElementById('modalCommonName').textContent = plant.commonName;
       document.getElementById('modalBotanicalName').textContent = plant.botanicalName;
 
+      updateModalPhotoUI(plant);
+
       const freezeBox = document.getElementById('modalFreezeWarning');
       if (plant.freezeSensitive || appState.freezeMode) {
         freezeBox.classList.remove('hidden');
@@ -1026,9 +1282,64 @@
       document.getElementById('modalBlooms').textContent = plant.blooms;
       document.getElementById('modalSize').textContent = plant.size;
       document.getElementById('modalCareTip').textContent = plant.careTip;
+      document.getElementById('modalAlternatives').textContent = plant.alternatives || 'Ask yard crew for comparable West Texas natives';
 
       updateModalStockDisplay(plant);
       document.getElementById('plantModal').classList.remove('hidden');
+    }
+
+    function updateModalPhotoUI(plant) {
+      const img = document.getElementById('modalPhotoPreview');
+      const placeholder = document.getElementById('modalPhotoPlaceholder');
+      const removeBtn = document.getElementById('modalRemovePhotoBtn');
+      if (plant.photo) {
+        img.src = plant.photo;
+        img.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        removeBtn.classList.remove('hidden');
+      } else {
+        img.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        removeBtn.classList.add('hidden');
+      }
+    }
+
+    function handlePlantPhotoUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file || !appState.selectedPlantId) return;
+      const plant = appState.plants.find(p => p.id === appState.selectedPlantId);
+      if (!plant) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 320;
+          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          plant.photo = canvas.toDataURL('image/jpeg', 0.72);
+          saveState();
+          updateModalPhotoUI(plant);
+          renderPlants();
+          showToast('Plant photo saved to device!');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removePlantPhoto() {
+      if (!appState.selectedPlantId) return;
+      const plant = appState.plants.find(p => p.id === appState.selectedPlantId);
+      if (!plant) return;
+      plant.photo = '';
+      saveState();
+      updateModalPhotoUI(plant);
+      renderPlants();
+      showToast('Photo removed');
     }
 
     function updateSelectedPlantHouse(newHouse) {
@@ -1170,6 +1481,7 @@
       const water = document.getElementById('newPlantWater').value.trim() || 'Check soil 2 inches deep; water deeply 1–2x/week';
       const blooms = document.getElementById('newPlantBlooms').value.trim() || 'Seasonal nursery stock';
       const tip = document.getElementById('newPlantTip').value.trim() || ('Located in ' + house + '. Keep watered and tagged.');
+      const alts = document.getElementById('newPlantAlts').value.trim() || 'Autumn Sage, Red Yucca';
       const count = parseInt(document.getElementById('newPlantCount').value, 10) || 0;
 
       if (!name) {
@@ -1193,12 +1505,14 @@
         blooms: blooms,
         size: 'See pot tag',
         careTip: tip,
-        stock: Math.max(0, count)
+        alternatives: alts,
+        stock: Math.max(0, count),
+        photo: ''
       };
 
       appState.plants.unshift(newPlant);
       saveState();
-      ['newPlantName', 'newPlantBotanical', 'newPlantSun', 'newPlantWater', 'newPlantBlooms', 'newPlantTip'].forEach(id => {
+      ['newPlantName', 'newPlantBotanical', 'newPlantSun', 'newPlantWater', 'newPlantBlooms', 'newPlantTip', 'newPlantAlts'].forEach(id => {
         document.getElementById(id).value = '';
       });
       document.getElementById('newPlantCount').value = '10';
