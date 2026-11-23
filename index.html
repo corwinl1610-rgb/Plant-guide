@@ -1,0 +1,1492 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Wolfe Nursery Yard & Truck Companion</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            forest: {
+              950: '#0a140f',
+              900: '#102118',
+              800: '#183325',
+              700: '#224734',
+              600: '#2e6147',
+            },
+            slatecard: {
+              900: '#131716',
+              800: '#1c2220',
+              700: '#28302d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar and touch-friendly enhancements */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background-color: #0d1310;
+      color: #f3f6f4;
+      font-family: 'Inter', sans-serif;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up {
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24 selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- Top Sticky Header -->
+  <header class="sticky top-0 z-30 bg-forest-950/95 backdrop-blur-md border-b border-forest-800 px-4 py-3 shadow-lg">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-forest-800 border border-emerald-400/30 flex items-center justify-center shadow-inner">
+          <i class="fa-solid fa-seedling text-amber-400 text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-white leading-tight">Wolfe Nursery</h1>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Zone 7a/7b</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium">Lubbock Yard & Truck Companion</p>
+        </div>
+      </div>
+
+      <!-- Quick Freeze Status Indicator & Reset Button -->
+      <div class="flex items-center gap-2">
+        <button onclick="toggleFreezeMode()" id="headerFreezeBtn" class="px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all active:scale-95 bg-slatecard-800 border-slate-700 text-slate-300">
+          <i class="fa-solid fa-snowflake text-sky-400"></i>
+          <span id="headerFreezeText">Freeze: OFF</span>
+        </button>
+        <button onclick="openResetConfirm()" title="Reset Demo Data" class="p-2.5 rounded-xl bg-slatecard-800 border border-slate-700 text-slate-400 hover:text-white active:scale-95">
+          <i class="fa-solid fa-rotate-right text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toast Notification Banner -->
+  <div id="toastContainer" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none transition-all duration-300 opacity-0 -translate-y-3">
+    <div id="toastContent" class="bg-emerald-900/95 border border-emerald-400/40 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 backdrop-blur-md">
+      <i id="toastIcon" class="fa-solid fa-circle-check text-amber-400 text-lg"></i>
+      <span id="toastMessage" class="text-sm font-semibold">Updated!</span>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 pt-4">
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: PLANT LOOKUP (CUSTOMER & CREW MODE)                -->
+    <!-- ========================================================= -->
+    <section id="tab-lookup" class="space-y-4">
+      <!-- Freeze Alert Mini Callout if Active -->
+      <div id="lookupFreezeBanner" class="hidden bg-sky-950/80 border border-sky-400/40 rounded-2xl p-3.5 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-sky-500/20 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-temperature-arrow-down text-sky-300 text-lg"></i>
+          </div>
+          <div>
+            <p class="text-xs font-extrabold uppercase tracking-wider text-sky-300">West Texas Freeze Advisory Active</p>
+            <p class="text-xs text-slate-200 mt-0.5">Highlighting Zone 8 & tender plants needing frost cloth or pre-freeze watering.</p>
+          </div>
+        </div>
+        <button onclick="setLookupFilter('freeze')" class="shrink-0 px-3 py-1.5 rounded-xl bg-sky-500 text-slate-950 font-bold text-xs active:scale-95">
+          View List
+        </button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input
+          type="text"
+          id="plantSearchInput"
+          oninput="renderPlants()"
+          placeholder="Search plant, bloom color, bay, or care tip..."
+          class="w-full bg-slatecard-800 border border-slate-700 focus:border-amber-400 rounded-2xl pl-11 pr-10 py-3.5 text-sm sm:text-base text-white placeholder-slate-400 outline-none shadow-sm"
+        />
+        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1.5">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="filterPillsContainer">
+        <button onclick="setLookupFilter('all')" data-filter="all" class="filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all bg-amber-400 text-slate-950 border-amber-400">
+          All Plants (<span id="count-all">10</span>)
+        </button>
+        <button onclick="setLookupFilter('hardy')" data-filter="hardy" class="filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all bg-slatecard-800 text-slate-200 border-slate-700">
+          <i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i>Zone 7 Hardy
+        </button>
+        <button onclick="setLookupFilter('full-sun')" data-filter="full-sun" class="filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all bg-slatecard-800 text-slate-200 border-slate-700">
+          <i class="fa-solid fa-sun text-amber-400 mr-1"></i>Full Sun
+        </button>
+        <button onclick="setLookupFilter('shade')" data-filter="shade" class="filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all bg-slatecard-800 text-slate-200 border-slate-700">
+          <i class="fa-solid fa-cloud-sun text-sky-300 mr-1"></i>Afternoon Shade
+        </button>
+        <button onclick="setLookupFilter('drought')" data-filter="drought" class="filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all bg-slatecard-800 text-slate-200 border-slate-700">
+          <i class="fa-solid fa-droplet-slash text-orange-400 mr-1"></i>Drought Tough
+        </button>
+        <button onclick="setLookupFilter('freeze')" data-filter="freeze" class="filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all bg-slatecard-800 text-slate-200 border-slate-700">
+          <i class="fa-solid fa-snowflake text-sky-400 mr-1"></i>Freeze Alert
+        </button>
+      </div>
+
+      <!-- Plant Cards List -->
+      <div id="plantCardsGrid" class="space-y-3">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: YARD CARE & WATER (CREW MODE)                      -->
+    <!-- ========================================================= -->
+    <section id="tab-care" class="hidden space-y-4">
+      <!-- Prominent Freeze Alert Toggle Banner -->
+      <div id="freezeToggleCard" class="rounded-2xl p-4 border transition-all bg-slatecard-800 border-slate-700 shadow-md">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-start gap-3">
+            <div id="freezeIconBox" class="w-11 h-11 rounded-2xl bg-sky-500/15 border border-sky-400/30 flex items-center justify-center shrink-0 mt-0.5">
+              <i class="fa-solid fa-snowflake text-sky-400 text-xl"></i>
+            </div>
+            <div>
+              <h2 class="font-extrabold text-base text-white">West Texas Freeze Alert Mode</h2>
+              <p id="freezeStatusSubtext" class="text-xs text-slate-300 mt-0.5">Toggle ON when overnight Lubbock temps drop below 32°F to highlight frost-cloth & pre-freeze watering tasks.</p>
+            </div>
+          </div>
+          <button onclick="toggleFreezeMode()" id="mainFreezeSwitch" class="shrink-0 px-4 py-2.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all active:scale-95 bg-slate-700 text-slate-200 border border-slate-600">
+            Turn ON
+          </button>
+        </div>
+
+        <!-- Expanded Freeze Protocol when ON -->
+        <div id="freezeProtocolBox" class="hidden mt-4 pt-3.5 border-t border-sky-400/30 space-y-2.5">
+          <div class="flex items-center gap-2 text-sky-300 font-bold text-xs uppercase tracking-wider">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>Priority Freeze-Sensitive Stock on Yard:</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div class="bg-sky-950/70 border border-sky-400/25 rounded-xl p-2.5">
+              <span class="font-bold text-white block">Texas Sage (Cenizo) • Zone 8</span>
+              <span class="text-sky-200">Cover container roots with mulch or frost cloth; avoid heavy wet soil right before deep freeze.</span>
+            </div>
+            <div class="bg-sky-950/70 border border-sky-400/25 rounded-xl p-2.5">
+              <span class="font-bold text-white block">Upright Rosemary • Zone 7-8</span>
+              <span class="text-sky-200">Move pots inside greenhouse/windbreak if temps drop under 20°F.</span>
+            </div>
+            <div class="bg-sky-950/70 border border-sky-400/25 rounded-xl p-2.5">
+              <span class="font-bold text-white block">Endless Summer Hydrangea</span>
+              <span class="text-sky-200">Water soil thoroughly 24h before freeze; protect emerging buds with frost cloth.</span>
+            </div>
+            <div class="bg-sky-950/70 border border-sky-400/25 rounded-xl p-2.5">
+              <span class="font-bold text-white block">Garden Mums & Annual Color</span>
+              <span class="text-sky-200">Deep water pots prior to freeze (moist soil holds heat); pull into hoop house if sub-25°F.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Watering Progress Bar -->
+      <div class="bg-slatecard-800 border border-slate-700/80 rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-2">
+          <div>
+            <h3 class="font-bold text-sm text-white">Today's Yard Watering & Care</h3>
+            <p class="text-xs text-slate-400" id="careProgressText">0 of 8 tasks completed</p>
+          </div>
+          <button onclick="resetCareChecklist()" class="px-3 py-1.5 rounded-xl bg-slatecard-700 hover:bg-slate-700 text-xs font-semibold text-amber-400 border border-slate-600 active:scale-95">
+            <i class="fa-solid fa-arrows-rotate mr-1"></i>New Day Reset
+          </button>
+        </div>
+        <div class="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden">
+          <div id="careProgressBar" class="h-full bg-gradient-to-r from-emerald-500 to-amber-400 transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Grouped Watering Checklist -->
+      <div id="careChecklistContainer" class="space-y-4">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: LIVE STOCK (INVENTORY COUNTER)                     -->
+    <!-- ========================================================= -->
+    <section id="tab-stock" class="hidden space-y-4">
+      <!-- Top Summary & Add New Item Button -->
+      <div class="bg-slatecard-800 border border-slate-700 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="font-extrabold text-base text-white">Live Yard Inventory</h2>
+          <p class="text-xs text-slate-400 mt-0.5">
+            Total Units: <span id="totalStockCount" class="font-bold text-emerald-400">0</span> • 
+            Low Stock Alerts: <span id="lowStockCount" class="font-bold text-amber-400">0</span>
+          </p>
+        </div>
+        <button onclick="toggleAddStockForm()" class="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-md active:scale-95">
+          <i class="fa-solid fa-plus"></i> Add New Plant
+        </button>
+      </div>
+
+      <!-- Collapsible Add New Plant Form -->
+      <div id="addStockFormCard" class="hidden bg-forest-900/90 border border-emerald-500/40 rounded-2xl p-4 space-y-3 animate-slide-up">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-sm text-emerald-300"><i class="fa-solid fa-seedling mr-1.5"></i>Add Plant to Yard Inventory</h3>
+          <button onclick="toggleAddStockForm()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Plant Name *</label>
+            <input type="text" id="newPlantName" placeholder="e.g., Desert Willow (Bubba)" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Yard Bay Location *</label>
+            <input type="text" id="newPlantBay" placeholder="e.g., Tree Lot Row 2" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">USDA Hardiness Zone</label>
+            <select id="newPlantZone" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+              <option value="Zone 5-9">Zone 5-9 (West TX Hardy)</option>
+              <option value="Zone 6-9">Zone 6-9 (West TX Hardy)</option>
+              <option value="Zone 7-10">Zone 7-10 (Hardy)</option>
+              <option value="Zone 8-10">Zone 8-10 (Borderline / Freeze Sensitive)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Initial Count</label>
+            <input type="number" id="newPlantCount" value="10" min="0" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button onclick="toggleAddStockForm()" class="px-4 py-2 rounded-xl bg-slatecard-800 text-slate-300 text-xs font-bold">Cancel</button>
+          <button onclick="addNewPlantItem()" class="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 text-xs font-extrabold active:scale-95">Save to Yard</button>
+        </div>
+      </div>
+
+      <!-- Stock Filter Bar -->
+      <div class="flex gap-2">
+        <input type="text" id="stockSearchInput" oninput="renderStockList()" placeholder="Filter inventory by name or bay..." class="flex-1 bg-slatecard-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none focus:border-amber-400">
+        <button onclick="toggleLowStockOnly()" id="lowStockFilterBtn" class="px-3.5 py-2.5 rounded-xl bg-slatecard-800 border border-slate-700 text-xs font-bold text-slate-300 shrink-0">
+          Low Stock Only
+        </button>
+      </div>
+
+      <!-- Inventory Counter List -->
+      <div id="stockListContainer" class="space-y-2.5">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 4: TRUCK & DELIVERIES                                 -->
+    <!-- ========================================================= -->
+    <section id="tab-trucks" class="hidden space-y-6">
+      
+      <!-- SECTION A: INCOMING VENDOR TRUCKS -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-extrabold text-base text-white flex items-center gap-2">
+              <i class="fa-solid fa-truck-ramp-box text-amber-400"></i> Incoming Vendor Trucks
+            </h2>
+            <p class="text-xs text-slate-400">Unloading automatically adds items to Live Stock</p>
+          </div>
+        </div>
+
+        <div id="vendorTrucksContainer" class="space-y-3">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- SECTION B: CUSTOMER TRAILER / DELIVERY TICKETS -->
+      <div class="space-y-3 pt-2 border-t border-slate-800">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-extrabold text-base text-white flex items-center gap-2">
+              <i class="fa-solid fa-trailer text-emerald-400"></i> Customer Trailer & Delivery Loads
+            </h2>
+            <p class="text-xs text-slate-400">Tap status badge to advance load progress</p>
+          </div>
+          <button onclick="toggleAddTicketForm()" class="px-3.5 py-2 rounded-xl bg-emerald-500 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 active:scale-95">
+            <i class="fa-solid fa-plus"></i> New Load
+          </button>
+        </div>
+
+        <!-- Quick Add Customer Ticket Form -->
+        <div id="addTicketFormCard" class="hidden bg-slatecard-800 border border-emerald-500/40 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-white">Create Customer Load Ticket</h3>
+            <button onclick="toggleAddTicketForm()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Customer / Landscaper Name *</label>
+              <input type="text" id="ticketCustomerName" placeholder="e.g., Miller Landscaping / Walk-in" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-amber-400">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Load Type & Vehicle</label>
+              <input type="text" id="ticketVehicle" placeholder="e.g., Flatbed Trailer • Bay 2" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-amber-400">
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-slate-300 mb-1">Items to Pull *</label>
+            <input type="text" id="ticketItems" placeholder="e.g., 3x Live Oak (15 gal), 6x Autumn Sage" class="w-full bg-slatecard-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-amber-400">
+          </div>
+          <div class="flex justify-end gap-2">
+            <button onclick="toggleAddTicketForm()" class="px-3.5 py-2 rounded-xl bg-slatecard-700 text-slate-300 text-xs font-bold">Cancel</button>
+            <button onclick="addCustomerTicket()" class="px-4 py-2 rounded-xl bg-amber-400 text-slate-950 text-xs font-extrabold active:scale-95">Add Ticket</button>
+          </div>
+        </div>
+
+        <div id="customerTicketsContainer" class="space-y-3">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Bottom Sticky Navigation Bar -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 bg-forest-950/95 backdrop-blur-md border-t border-forest-800 px-2 py-2 shadow-2xl">
+    <div class="max-w-3xl mx-auto grid grid-cols-4 gap-1.5">
+      <button onclick="switchTab('lookup')" id="nav-lookup" class="nav-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-forest-800 text-amber-400 border border-emerald-500/30 transition-all">
+        <i class="fa-solid fa-leaf text-lg mb-0.5"></i>
+        <span class="text-[11px] font-extrabold tracking-tight">Plant Lookup</span>
+      </button>
+
+      <button onclick="switchTab('care')" id="nav-care" class="nav-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-400 hover:text-white transition-all relative">
+        <i class="fa-solid fa-faucet-drip text-lg mb-0.5"></i>
+        <span class="text-[11px] font-bold tracking-tight">Yard Care</span>
+        <span id="careBadge" class="hidden absolute top-1.5 right-4 w-2 h-2 rounded-full bg-sky-400"></span>
+      </button>
+
+      <button onclick="switchTab('stock')" id="nav-stock" class="nav-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-400 hover:text-white transition-all relative">
+        <i class="fa-solid fa-boxes-stacked text-lg mb-0.5"></i>
+        <span class="text-[11px] font-bold tracking-tight">Live Stock</span>
+        <span id="stockAlertBadge" class="hidden absolute top-1.5 right-4 w-2 h-2 rounded-full bg-amber-400"></span>
+      </button>
+
+      <button onclick="switchTab('trucks')" id="nav-trucks" class="nav-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-400 hover:text-white transition-all relative">
+        <i class="fa-solid fa-truck-fast text-lg mb-0.5"></i>
+        <span class="text-[11px] font-bold tracking-tight">Trucks</span>
+        <span id="truckPendingBadge" class="absolute top-1.5 right-4 w-2 h-2 rounded-full bg-emerald-400"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Plant Detail Modal / Bottom Drawer -->
+  <div id="plantModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4" onclick="closePlantModal(event)">
+    <div class="bg-slatecard-900 border-t sm:border border-slate-700 w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-5 max-h-[90vh] overflow-y-auto space-y-4 animate-slide-up shadow-2xl" onclick="event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="flex flex-wrap items-center gap-2 mb-1">
+            <span id="modalZoneBadge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-full"></span>
+            <span id="modalBayBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slatecard-800 text-slate-300 border border-slate-700"></span>
+          </div>
+          <h2 id="modalCommonName" class="text-xl font-extrabold text-white"></h2>
+          <p id="modalBotanicalName" class="text-xs italic text-slate-400"></p>
+        </div>
+        <button onclick="forceClosePlantModal()" class="w-9 h-9 rounded-full bg-slatecard-800 text-slate-300 hover:text-white flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Freeze Warning Box Inside Modal (if applicable) -->
+      <div id="modalFreezeWarning" class="hidden bg-sky-950/90 border border-sky-400/40 rounded-2xl p-3 flex items-start gap-2.5">
+        <i class="fa-solid fa-snowflake text-sky-400 mt-0.5"></i>
+        <div class="text-xs">
+          <span class="font-extrabold text-sky-300 block">West Texas Freeze Action Needed</span>
+          <span id="modalFreezeNote" class="text-slate-200"></span>
+        </div>
+      </div>
+
+      <!-- Care Grid -->
+      <div class="grid grid-cols-2 gap-2.5 text-xs">
+        <div class="bg-slatecard-800 border border-slate-700/80 rounded-2xl p-3">
+          <span class="text-slate-400 font-semibold block mb-1"><i class="fa-solid fa-sun text-amber-400 mr-1"></i>Sun & Soil</span>
+          <p id="modalSunSoil" class="text-white font-semibold leading-snug"></p>
+        </div>
+        <div class="bg-slatecard-800 border border-slate-700/80 rounded-2xl p-3">
+          <span class="text-slate-400 font-semibold block mb-1"><i class="fa-solid fa-droplet text-sky-400 mr-1"></i>Watering Schedule</span>
+          <p id="modalWater" class="text-white font-semibold leading-snug"></p>
+        </div>
+        <div class="bg-slatecard-800 border border-slate-700/80 rounded-2xl p-3">
+          <span class="text-slate-400 font-semibold block mb-1"><i class="fa-solid fa-spa text-pink-400 mr-1"></i>Blooms & Season</span>
+          <p id="modalBlooms" class="text-white font-semibold leading-snug"></p>
+        </div>
+        <div class="bg-slatecard-800 border border-slate-700/80 rounded-2xl p-3">
+          <span class="text-slate-400 font-semibold block mb-1"><i class="fa-solid fa-ruler-combined text-emerald-400 mr-1"></i>Mature Size</span>
+          <p id="modalSize" class="text-white font-semibold leading-snug"></p>
+        </div>
+      </div>
+
+      <!-- West Texas Crew & Customer Tip -->
+      <div class="bg-forest-900/80 border border-emerald-500/30 rounded-2xl p-3.5">
+        <h4 class="text-xs font-extrabold uppercase tracking-wider text-amber-400 mb-1">
+          <i class="fa-solid fa-lightbulb mr-1"></i> West Texas Care & Sales Tip
+        </h4>
+        <p id="modalCareTip" class="text-sm text-slate-100 leading-relaxed"></p>
+      </div>
+
+      <!-- Quick Stock Adjuster inside Modal -->
+      <div class="bg-slatecard-800 border border-slate-700 rounded-2xl p-3.5 flex items-center justify-between">
+        <div>
+          <span class="text-xs text-slate-400 font-semibold block">Current Yard Stock</span>
+          <div class="flex items-center gap-2">
+            <span id="modalStockCount" class="text-2xl font-extrabold text-white">0</span>
+            <span id="modalLowStockTag" class="hidden text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Low Stock</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="adjustModalStock(-1)" class="w-12 h-12 rounded-2xl bg-slatecard-700 hover:bg-red-900/50 border border-slate-600 text-white font-extrabold text-xl active:scale-95 flex items-center justify-center">
+            -1
+          </button>
+          <button onclick="adjustModalStock(1)" class="w-12 h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xl active:scale-95 flex items-center justify-center shadow-md">
+            +1
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="resetModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slatecard-900 border border-slate-700 rounded-3xl p-5 max-w-sm w-full space-y-4 shadow-2xl">
+      <h3 class="text-lg font-extrabold text-white">Reset Demo Data?</h3>
+      <p class="text-sm text-slate-300">This will restore the original 10 West Texas plants, default stock counts, watering checklist, and incoming truck manifests.</p>
+      <div class="flex justify-end gap-2">
+        <button onclick="closeResetConfirm()" class="px-4 py-2.5 rounded-xl bg-slatecard-800 text-slate-300 text-xs font-bold">Cancel</button>
+        <button onclick="confirmResetDemo()" class="px-4 py-2.5 rounded-xl bg-amber-400 text-slate-950 text-xs font-extrabold">Reset Everything</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // INITIAL WEST TEXAS NURSERY DATA (WOLFE NURSERY - LUBBOCK / ZONE 7A-7B)
+    // =========================================================================
+    const DEFAULT_PLANTS = [
+      {
+        id: 'autumn-sage',
+        commonName: 'Autumn Sage',
+        botanicalName: 'Salvia greggii',
+        zone: 'Zone 5-9',
+        hardinessStatus: 'hardy', // 'hardy' | 'borderline'
+        tags: ['hardy', 'full-sun', 'drought'],
+        freezeSensitive: false,
+        freezeNote: 'Root hardy in Zone 7; cut back woody stems in late February rather than fall.',
+        bay: 'Bay A1 • Perennials',
+        sunSoil: 'Full Sun (6+ hrs) • Well-drained soil (hates soggy clay)',
+        water: '2x/week first month, then every 7–10 days once rooted',
+        blooms: 'Red, pink, coral, or white blooms • Spring through first hard freeze',
+        size: '2–3 ft tall × 2–3 ft wide',
+        careTip: 'West Texas hummingbird magnet. Never overwater in winter—wet clay soil causes root rot faster than cold weather.',
+        stock: 18
+      },
+      {
+        id: 'texas-sage',
+        commonName: 'Texas Sage (Cenizo)',
+        botanicalName: 'Leucophyllum frutescens',
+        zone: 'Zone 8 • Borderline',
+        hardinessStatus: 'borderline',
+        tags: ['full-sun', 'drought', 'freeze'],
+        freezeSensitive: true,
+        freezeNote: 'Zone 8 borderline in Lubbock—plant near south/west brick walls and cover containers with frost cloth below 22°F.',
+        bay: 'Bay B2 • Native Shrubs',
+        sunSoil: 'Full Blazing Sun • Rocky, alkaline, fast-draining soil',
+        water: 'Almost none once established (every 2–3 weeks in peak summer)',
+        blooms: 'Purple-magenta flowers • Erupts right before or after rainstorms',
+        size: '4–6 ft tall × 4–6 ft wide',
+        careTip: 'Called the "Barometer Bush" because humidity triggers blooms. Tell customers: overwatering is the #1 killer of Cenizo.',
+        stock: 9
+      },
+      {
+        id: 'red-yucca',
+        commonName: 'Red Yucca',
+        botanicalName: 'Hesperaloe parviflora',
+        zone: 'Zone 5-10',
+        hardinessStatus: 'hardy',
+        tags: ['hardy', 'full-sun', 'drought'],
+        freezeSensitive: false,
+        freezeNote: 'Bulletproof in West Texas freezes—no covering required.',
+        bay: 'Bay B1 • Desert & Natives',
+        sunSoil: 'Full Sun • Handles tough Lubbock caliche & alkaline soil',
+        water: 'Every 2–3 weeks in summer; zero supplemental water in winter',
+        blooms: 'Tall coral-red flower spikes • Late spring through summer',
+        size: '3–4 ft foliage • 5 ft bloom stalks',
+        careTip: 'Zero sharp spines despite the name, making it safe next to sidewalks and driveways. Thrives on pure neglect.',
+        stock: 14
+      },
+      {
+        id: 'black-eyed-susan',
+        commonName: 'Black-Eyed Susan',
+        botanicalName: 'Rudbeckia fulgida',
+        zone: 'Zone 3-9',
+        hardinessStatus: 'hardy',
+        tags: ['hardy', 'full-sun'],
+        freezeSensitive: false,
+        freezeNote: 'Dies back cleanly to the crown after freeze and returns thicker every spring.',
+        bay: 'Bay A2 • Perennials',
+        sunSoil: 'Full Sun to light afternoon shade • Average garden soil',
+        water: '2x/week until established, then 1x/week in summer heat',
+        blooms: 'Golden-yellow petals with dark centers • Summer to fall',
+        size: '2–3 ft tall × 1.5–2 ft wide',
+        careTip: 'Deadhead spent blooms in July for a massive second wave of color. Great for beginner gardeners.',
+        stock: 11
+      },
+      {
+        id: 'upright-rosemary',
+        commonName: 'Upright Rosemary',
+        botanicalName: 'Salvia rosmarinus',
+        zone: 'Zone 7-8 • Protect',
+        hardinessStatus: 'borderline',
+        tags: ['full-sun', 'drought', 'freeze'],
+        freezeSensitive: true,
+        freezeNote: 'Can burn in single-digit Lubbock cold snaps. Move nursery pots inside greenhouse when temps drop below 20°F.',
+        bay: 'Bay A4 • Herbs & Sun',
+        sunSoil: 'Full Sun • Fast-draining sandy or amended soil',
+        water: 'Let top 2–3 inches of soil dry out completely between waterings',
+        blooms: 'Tiny pale blue flowers • Late winter to spring (evergreen foliage)',
+        size: '3–5 ft tall × 2–4 ft wide',
+        careTip: 'Aromatic evergreen shrub that doubles as a kitchen herb. Needs good drainage—wet roots in winter will rot it.',
+        stock: 3
+      },
+      {
+        id: 'garden-mums',
+        commonName: 'Garden Mums',
+        botanicalName: 'Chrysanthemum morifolium',
+        zone: 'Zone 5-9 • Cool Season',
+        hardinessStatus: 'hardy',
+        tags: ['hardy', 'full-sun', 'freeze'],
+        freezeSensitive: true,
+        freezeNote: 'Water pots thoroughly 24 hrs before a freeze (moist soil insulates roots); cover blooms if frost hits.',
+        bay: 'Front Table • Seasonal Color',
+        sunSoil: 'Full Sun • Rich, well-drained potting or garden soil',
+        water: 'Keep evenly moist (2–3x/week in pots; 1–2x/week in ground)',
+        blooms: 'Bronze, yellow, burgundy, purple, white • Heavy fall color',
+        size: '1.5–2 ft tall × 2 ft wide',
+        careTip: 'Water at the base rather than overhead so blooms stay crisp and avoid fungal spots.',
+        stock: 22
+      },
+      {
+        id: 'live-oak',
+        commonName: 'Live Oak',
+        botanicalName: 'Quercus virginiana',
+        zone: 'Zone 7-10',
+        hardinessStatus: 'hardy',
+        tags: ['hardy', 'full-sun', 'drought'],
+        freezeSensitive: false,
+        freezeNote: 'Evergreen oak hardy to Zone 7; may drop old leaves during extreme cold snaps before pushing fresh green growth.',
+        bay: 'Tree Lot • Row 1',
+        sunSoil: 'Full Sun • Adapts to alkaline West Texas soil',
+        water: '10 gal/week per inch of trunk diameter for first 2 years',
+        blooms: 'Evergreen canopy • Produces acorns in fall',
+        size: '40–50 ft tall × 50–70 ft wide',
+        careTip: 'Premier long-lived West Texas shade tree. Always apply 3 inches of mulch in a wide ring—never piled against trunk bark.',
+        stock: 6
+      },
+      {
+        id: 'red-oak',
+        commonName: 'Shumard Red Oak',
+        botanicalName: 'Quercus shumardii',
+        zone: 'Zone 5-9',
+        hardinessStatus: 'hardy',
+        tags: ['hardy', 'full-sun', 'drought'],
+        freezeSensitive: false,
+        freezeNote: 'Extremely cold-hardy shade tree; zero freeze worry in Lubbock.',
+        bay: 'Tree Lot • Row 2',
+        sunSoil: 'Full Sun • Deep, well-drained soil (tolerates alkaline clay)',
+        water: 'Deep soak 2x/week first summer, then 1x/week',
+        blooms: 'Brilliant scarlet-red fall foliage',
+        size: '45–60 ft tall × 35–45 ft wide',
+        careTip: 'Faster growing than Live Oak with dependable West Texas fall color. Avoid high-pH iron chlorosis by adding sulfur/compost at planting.',
+        stock: 8
+      },
+      {
+        id: 'elberta-peach',
+        commonName: 'Elberta Peach Tree',
+        botanicalName: 'Prunus persica "Elberta"',
+        zone: 'Zone 5-8',
+        hardinessStatus: 'hardy',
+        tags: ['hardy', 'full-sun'],
+        freezeSensitive: false,
+        freezeNote: 'Tree itself is hardy to -10°F, though late March/April blossoms can be nipped by spring frost.',
+        bay: 'Fruit Yard • Row 4',
+        sunSoil: 'Full Sun • Avoid low-lying frost pockets where cold air settles',
+        water: 'Deep soak 1–2x/week during spring/summer fruit swell',
+        blooms: 'Showy pink spring blossoms • Freestone yellow peaches in July/Aug',
+        size: '12–15 ft tall × 12–15 ft wide',
+        careTip: 'Self-fertile (only needs 1 tree!). Prune to an open-center vase shape in late winter so sunlight ripens the fruit.',
+        stock: 2
+      },
+      {
+        id: 'hydrangea',
+        commonName: 'Endless Summer Hydrangea',
+        botanicalName: 'Hydrangea macrophylla',
+        zone: 'Zone 4-9 • Shade Only',
+        hardinessStatus: 'hardy',
+        tags: ['hardy', 'shade', 'freeze'],
+        freezeSensitive: true,
+        freezeNote: 'Root hardy, but late freezes kill tender spring buds—cover with frost cloth on freezing nights.',
+        bay: 'Shade House • Bench 2',
+        sunSoil: 'Morning Sun + Strict Afternoon Shade • Rich, mulched soil',
+        water: '2–3x/week in summer; never let root ball dry out completely',
+        blooms: 'Large blue or pink mophead blooms • Late spring through summer',
+        size: '3–5 ft tall × 3–5 ft wide',
+        careTip: 'CRITICAL FOR LUBBOCK: Will scorch in afternoon sun even if watered daily. Must go on the north or east side of a house.',
+        stock: 3
+      }
+    ];
+
+    const DEFAULT_CARE_TASKS = [
+      {
+        id: 'care-1',
+        section: 'Shade & Bedding Benches',
+        title: 'Check & water Endless Summer Hydrangeas + Shade Bench',
+        detail: 'Finger-test pots; keep moist without waterlogging trays.',
+        freezeSensitive: true,
+        freezeInstruction: 'FREEZE PREP: Water thoroughly before sunset & stage frost cloth over Bench 2.',
+        completed: false
+      },
+      {
+        id: 'care-2',
+        section: 'Shade & Bedding Benches',
+        title: 'Front Table Garden Mums & Pansies deep soak',
+        detail: 'Water at base of pots; pull wilted blooms.',
+        freezeSensitive: true,
+        freezeInstruction: 'FREEZE PREP: Moist soil holds heat overnight—water all seasonal color pots before 3 PM.',
+        completed: false
+      },
+      {
+        id: 'care-3',
+        section: 'Perennials & Natives',
+        title: 'Bay A1/A2 Perennials (Autumn Sage & Black-Eyed Susan)',
+        detail: 'Water only if top 2 inches of potting mix are dry.',
+        freezeSensitive: false,
+        freezeInstruction: '',
+        completed: false
+      },
+      {
+        id: 'care-4',
+        section: 'Perennials & Natives',
+        title: 'Bay A4 Upright Rosemary & Herb Bench',
+        detail: 'Light watering only—allow soil to dry between waterings.',
+        freezeSensitive: true,
+        freezeInstruction: 'FREEZE PREP: Move Upright Rosemary pots inside greenhouse windbreak if temps < 20°F.',
+        completed: false
+      },
+      {
+        id: 'care-5',
+        section: 'Shrubs & Evergreens',
+        title: 'Bay B1/B2 Texas Sage (Cenizo) & Red Yucca check',
+        detail: 'Skip watering unless bone-dry; check drainage holes.',
+        freezeSensitive: true,
+        freezeInstruction: 'FREEZE PREP: Wrap container roots of Texas Sage with burlap/frost cloth.',
+        completed: false
+      },
+      {
+        id: 'care-6',
+        section: 'B&B / Container Trees',
+        title: 'Tree Lot Rows 1 & 2 (Live Oaks & Shumard Red Oaks)',
+        detail: 'Run drip bubblers 20 mins; check wind-blown trees & re-stake.',
+        freezeSensitive: false,
+        freezeInstruction: '',
+        completed: false
+      },
+      {
+        id: 'care-7',
+        section: 'B&B / Container Trees',
+        title: 'Fruit Yard Row 4 (Elberta Peaches & Stone Fruit)',
+        detail: 'Deep soak containers; check bark guards & tags.',
+        freezeSensitive: false,
+        freezeInstruction: '',
+        completed: false
+      }
+    ];
+
+    const DEFAULT_TRUCKS = [
+      {
+        id: 'truck-1',
+        vendor: 'Monrovia Growers',
+        eta: 'Today • 2:30 PM',
+        bay: 'Unloading Bay B1',
+        status: 'scheduled', // 'scheduled' | 'unloaded'
+        items: [
+          { plantId: 'autumn-sage', name: 'Autumn Sage (1 gal)', qty: 12 },
+          { plantId: 'upright-rosemary', name: 'Upright Rosemary (1 gal)', qty: 8 },
+          { plantId: 'hydrangea', name: 'Endless Summer Hydrangea (3 gal)', qty: 6 }
+        ]
+      },
+      {
+        id: 'truck-2',
+        vendor: 'Texas Native Trees & Wholesale',
+        eta: 'Tomorrow • 9:00 AM',
+        bay: 'Tree Lot Row 1-4',
+        status: 'scheduled',
+        items: [
+          { plantId: 'live-oak', name: 'Live Oak (15 gal)', qty: 5 },
+          { plantId: 'elberta-peach', name: 'Elberta Peach Tree (7 gal)', qty: 6 },
+          { plantId: 'texas-sage', name: 'Texas Sage Cenizo (3 gal)', qty: 10 }
+        ]
+      }
+    ];
+
+    const DEFAULT_TICKETS = [
+      {
+        id: 'ticket-1',
+        customer: 'Caprock Custom Homes',
+        vehicle: '16ft Flatbed Trailer • Bay 1',
+        items: '3x Live Oak (15 gal), 8x Red Yucca, 6x Autumn Sage',
+        status: 'Pending Pull', // 'Pending Pull' -> 'Staged' -> 'Loaded'
+        time: '10:15 AM'
+      },
+      {
+        id: 'ticket-2',
+        customer: 'Walk-In • Mrs. Henderson',
+        vehicle: 'White SUV • Front Loading',
+        items: '4x Garden Mums, 2x Black-Eyed Susan, 2 bags Soil',
+        status: 'Staged',
+        time: '10:40 AM'
+      }
+    ];
+
+    // =========================================================================
+    // STATE MANAGEMENT (LOCALSTORAGE PERSISTENCE)
+    // =========================================================================
+    const STORAGE_KEY = 'wolfe_nursery_companion_v1';
+
+    let appState = {
+      activeTab: 'lookup',
+      lookupFilter: 'all',
+      freezeMode: false,
+      lowStockOnly: false,
+      selectedPlantId: null,
+      plants: JSON.parse(JSON.stringify(DEFAULT_PLANTS)),
+      careTasks: JSON.parse(JSON.stringify(DEFAULT_CARE_TASKS)),
+      vendorTrucks: JSON.parse(JSON.stringify(DEFAULT_TRUCKS)),
+      customerTickets: JSON.parse(JSON.stringify(DEFAULT_TICKETS))
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          appState = { ...appState, ...parsed };
+        }
+      } catch (e) {
+        console.warn('Could not load saved state:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.warn('Could not save state:', e);
+      }
+    }
+
+    // =========================================================================
+    // TOAST NOTIFICATION HELPER
+    // =========================================================================
+    let toastTimeout;
+    function showToast(message, iconClass = 'fa-circle-check text-amber-400') {
+      const container = document.getElementById('toastContainer');
+      const msgEl = document.getElementById('toastMessage');
+      const iconEl = document.getElementById('toastIcon');
+
+      msgEl.textContent = message;
+      iconEl.className = `fa-solid ${iconClass} text-lg`;
+
+      container.classList.remove('opacity-0', '-translate-y-3');
+      container.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        container.classList.remove('opacity-100', 'translate-y-0');
+        container.classList.add('opacity-0', '-translate-y-3');
+      }, 2400);
+    }
+
+    // =========================================================================
+    // NAVIGATION & GLOBAL FREEZE TOGGLE
+    // =========================================================================
+    function switchTab(tabName) {
+      appState.activeTab = tabName;
+      saveState();
+
+      const tabs = ['lookup', 'care', 'stock', 'trucks'];
+      tabs.forEach(t => {
+        const section = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`nav-${t}`);
+        if (t === tabName) {
+          section.classList.remove('hidden');
+          btn.classList.add('bg-forest-800', 'text-amber-400', 'border', 'border-emerald-500/30');
+          btn.classList.remove('text-slate-400');
+        } else {
+          section.classList.add('hidden');
+          btn.classList.remove('bg-forest-800', 'text-amber-400', 'border', 'border-emerald-500/30');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      renderAll();
+    }
+
+    function toggleFreezeMode() {
+      appState.freezeMode = !appState.freezeMode;
+      saveState();
+      updateFreezeUI();
+      renderPlants();
+      renderCareChecklist();
+      showToast(
+        appState.freezeMode ? 'Freeze Alert ON: Sensitive stock highlighted' : 'Freeze Alert turned OFF',
+        appState.freezeMode ? 'fa-snowflake text-sky-400' : 'fa-sun text-amber-400'
+      );
+    }
+
+    function updateFreezeUI() {
+      const isOn = appState.freezeMode;
+      const headerBtn = document.getElementById('headerFreezeBtn');
+      const headerText = document.getElementById('headerFreezeText');
+      const lookupBanner = document.getElementById('lookupFreezeBanner');
+      const toggleCard = document.getElementById('freezeToggleCard');
+      const mainSwitch = document.getElementById('mainFreezeSwitch');
+      const protocolBox = document.getElementById('freezeProtocolBox');
+      const careBadge = document.getElementById('careBadge');
+
+      if (isOn) {
+        headerBtn.className = 'px-3 py-2 rounded-xl text-xs font-extrabold flex items-center gap-1.5 border transition-all active:scale-95 bg-sky-500/20 border-sky-400 text-sky-300 shadow-sm';
+        headerText.textContent = 'Freeze: ON';
+        lookupBanner.classList.remove('hidden');
+        toggleCard.className = 'rounded-2xl p-4 border transition-all bg-sky-950/60 border-sky-400/50 shadow-lg';
+        mainSwitch.className = 'shrink-0 px-4 py-2.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all active:scale-95 bg-sky-400 text-slate-950';
+        mainSwitch.textContent = 'ACTIVE (ON)';
+        protocolBox.classList.remove('hidden');
+        careBadge.classList.remove('hidden');
+      } else {
+        headerBtn.className = 'px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border transition-all active:scale-95 bg-slatecard-800 border-slate-700 text-slate-300';
+        headerText.textContent = 'Freeze: OFF';
+        lookupBanner.classList.add('hidden');
+        toggleCard.className = 'rounded-2xl p-4 border transition-all bg-slatecard-800 border-slate-700 shadow-md';
+        mainSwitch.className = 'shrink-0 px-4 py-2.5 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all active:scale-95 bg-slate-700 text-slate-200 border border-slate-600';
+        mainSwitch.textContent = 'Turn ON';
+        protocolBox.classList.add('hidden');
+        careBadge.classList.add('hidden');
+      }
+    }
+
+    // =========================================================================
+    // TAB 1: PLANT LOOKUP RENDERING & FILTERING
+    // =========================================================================
+    function setLookupFilter(filter) {
+      appState.lookupFilter = filter;
+      saveState();
+
+      document.querySelectorAll('.filter-pill').forEach(pill => {
+        if (pill.dataset.filter === filter) {
+          pill.className = 'filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-extrabold border transition-all bg-amber-400 text-slate-950 border-amber-400 shadow-sm';
+        } else {
+          pill.className = 'filter-pill shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all bg-slatecard-800 text-slate-200 border-slate-700';
+        }
+      });
+
+      renderPlants();
+    }
+
+    function clearSearch() {
+      document.getElementById('plantSearchInput').value = '';
+      renderPlants();
+    }
+
+    function renderPlants() {
+      const query = document.getElementById('plantSearchInput').value.trim().toLowerCase();
+      const clearBtn = document.getElementById('clearSearchBtn');
+      clearBtn.classList.toggle('hidden', query.length === 0);
+
+      document.getElementById('count-all').textContent = appState.plants.length;
+
+      const filtered = appState.plants.filter(p => {
+        // Filter pill match
+        if (appState.lookupFilter !== 'all') {
+          if (appState.lookupFilter === 'freeze' && !p.freezeSensitive) return false;
+          if (appState.lookupFilter !== 'freeze' && !p.tags.includes(appState.lookupFilter)) return false;
+        }
+        // Text search match
+        if (query) {
+          const haystack = `${p.commonName} ${p.botanicalName} ${p.zone} ${p.bay} ${p.sunSoil} ${p.blooms} ${p.careTip}`.toLowerCase();
+          return haystack.includes(query);
+        }
+        return true;
+      });
+
+      const grid = document.getElementById('plantCardsGrid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="bg-slatecard-800 border border-slate-700 rounded-2xl p-8 text-center space-y-2">
+            <i class="fa-solid fa-seedling text-slate-500 text-3xl"></i>
+            <p class="font-bold text-white">No plants match that filter</p>
+            <p class="text-xs text-slate-400">Try clearing your search or switching back to "All Plants".</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(plant => {
+        const isHardy = plant.hardinessStatus === 'hardy';
+        const zoneBadgeClass = isHardy
+          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+          : 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+
+        const freezeHighlight = (appState.freezeMode && plant.freezeSensitive)
+          ? 'border-sky-400/70 bg-sky-950/30 ring-1 ring-sky-400/30'
+          : 'border-slate-700/90 bg-slatecard-800';
+
+        const lowStock = plant.stock <= 3;
+
+        return `
+          <div onclick="openPlantModal('${plant.id}')" class="rounded-2xl p-4 border ${freezeHighlight} hover:border-amber-400/60 transition-all cursor-pointer active:scale-[0.99] shadow-sm space-y-3">
+            <!-- Top Row: Name + Stock Pill -->
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                  <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${zoneBadgeClass}">
+                    ${plant.zone}
+                  </span>
+                  ${plant.freezeSensitive ? `
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30">
+                      <i class="fa-solid fa-snowflake mr-1"></i>Freeze Watch
+                    </span>
+                  ` : ''}
+                </div>
+                <h3 class="font-extrabold text-base sm:text-lg text-white leading-snug">${plant.commonName}</h3>
+                <p class="text-xs italic text-slate-400">${plant.botanicalName} • <span class="not-italic text-slate-300 font-medium">${plant.bay}</span></p>
+              </div>
+
+              <!-- Live Stock Pill -->
+              <div class="shrink-0 text-right">
+                <div class="px-2.5 py-1 rounded-xl border ${lowStock ? 'bg-amber-500/20 border-amber-400/50 text-amber-300' : 'bg-forest-900 border-emerald-500/30 text-emerald-300'}">
+                  <span class="text-xs font-extrabold">${plant.stock} in stock</span>
+                </div>
+                ${lowStock ? `<span class="text-[10px] font-bold text-amber-400 block mt-0.5">Low Stock</span>` : ''}
+              </div>
+            </div>
+
+            <!-- Quick Care Specs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-slatecard-900/80 rounded-xl p-2.5 border border-slate-800">
+              <div class="flex items-start gap-2">
+                <i class="fa-solid fa-sun text-amber-400 mt-0.5 shrink-0"></i>
+                <span class="text-slate-200">${plant.sunSoil}</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <i class="fa-solid fa-droplet text-sky-400 mt-0.5 shrink-0"></i>
+                <span class="text-slate-200">${plant.water}</span>
+              </div>
+            </div>
+
+            <!-- Feature & Tap Hint -->
+            <div class="flex items-center justify-between gap-2 text-xs pt-0.5">
+              <span class="text-slate-300 truncate"><i class="fa-solid fa-spa text-pink-400 mr-1.5"></i>${plant.blooms}</span>
+              <span class="shrink-0 font-bold text-amber-400 flex items-center gap-1">
+                Care & Stock <i class="fa-solid fa-chevron-right text-[10px]"></i>
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // PLANT DETAIL MODAL & STOCK ADJUSTMENT
+    // =========================================================================
+    function openPlantModal(plantId) {
+      const plant = appState.plants.find(p => p.id === plantId);
+      if (!plant) return;
+
+      appState.selectedPlantId = plantId;
+
+      const isHardy = plant.hardinessStatus === 'hardy';
+      const zoneBadge = document.getElementById('modalZoneBadge');
+      zoneBadge.textContent = plant.zone;
+      zoneBadge.className = isHardy
+        ? 'text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+        : 'text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30';
+
+      document.getElementById('modalBayBadge').textContent = plant.bay;
+      document.getElementById('modalCommonName').textContent = plant.commonName;
+      document.getElementById('modalBotanicalName').textContent = plant.botanicalName;
+
+      const freezeBox = document.getElementById('modalFreezeWarning');
+      if (plant.freezeSensitive || appState.freezeMode) {
+        freezeBox.classList.remove('hidden');
+        document.getElementById('modalFreezeNote').textContent = plant.freezeNote;
+      } else {
+        freezeBox.classList.add('hidden');
+      }
+
+      document.getElementById('modalSunSoil').textContent = plant.sunSoil;
+      document.getElementById('modalWater').textContent = plant.water;
+      document.getElementById('modalBlooms').textContent = plant.blooms;
+      document.getElementById('modalSize').textContent = plant.size;
+      document.getElementById('modalCareTip').textContent = plant.careTip;
+
+      updateModalStockDisplay(plant);
+      document.getElementById('plantModal').classList.remove('hidden');
+    }
+
+    function updateModalStockDisplay(plant) {
+      document.getElementById('modalStockCount').textContent = plant.stock;
+      const lowTag = document.getElementById('modalLowStockTag');
+      lowTag.classList.toggle('hidden', plant.stock > 3);
+    }
+
+    function adjustModalStock(delta) {
+      if (!appState.selectedPlantId) return;
+      updatePlantStock(appState.selectedPlantId, delta);
+      const plant = appState.plants.find(p => p.id === appState.selectedPlantId);
+      if (plant) updateModalStockDisplay(plant);
+    }
+
+    function closePlantModal(event) {
+      if (event.target.id === 'plantModal') {
+        forceClosePlantModal();
+      }
+    }
+
+    function forceClosePlantModal() {
+      document.getElementById('plantModal').classList.add('hidden');
+      appState.selectedPlantId = null;
+    }
+
+    // =========================================================================
+    // TAB 2: YARD CARE & WATERING CHECKLIST
+    // =========================================================================
+    function toggleCareTask(taskId) {
+      const task = appState.careTasks.find(t => t.id === taskId);
+      if (!task) return;
+      task.completed = !task.completed;
+      saveState();
+      renderCareChecklist();
+    }
+
+    function resetCareChecklist() {
+      appState.careTasks.forEach(t => t.completed = false);
+      saveState();
+      renderCareChecklist();
+      showToast('Watering checklist reset for a new shift');
+    }
+
+    function renderCareChecklist() {
+      const total = appState.careTasks.length;
+      const done = appState.careTasks.filter(t => t.completed).length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById('careProgressText').textContent = `${done} of ${total} yard sections checked`;
+      document.getElementById('careProgressBar').style.width = `${pct}%`;
+
+      // Group by section
+      const sections = {};
+      appState.careTasks.forEach(task => {
+        if (!sections[task.section]) sections[task.section] = [];
+        sections[task.section].push(task);
+      });
+
+      const container = document.getElementById('careChecklistContainer');
+      container.innerHTML = Object.entries(sections).map(([sectionName, tasks]) => {
+        return `
+          <div class="bg-slatecard-800 border border-slate-700/90 rounded-2xl overflow-hidden shadow-sm">
+            <div class="bg-forest-900/90 px-4 py-2.5 border-b border-slate-700/80 flex items-center justify-between">
+              <h3 class="font-extrabold text-xs uppercase tracking-wider text-emerald-300">${sectionName}</h3>
+              <span class="text-[11px] font-bold text-slate-400">${tasks.filter(t => t.completed).length}/${tasks.length}</span>
+            </div>
+            <div class="divide-y divide-slate-700/60">
+              ${tasks.map(task => {
+                const showFreezeHighlight = appState.freezeMode && task.freezeSensitive;
+                return `
+                  <div onclick="toggleCareTask('${task.id}')" class="p-3.5 flex items-start gap-3 cursor-pointer transition-colors ${task.completed ? 'bg-slatecard-900/60 opacity-65' : 'hover:bg-slatecard-700/40'} ${showFreezeHighlight && !task.completed ? 'bg-sky-950/35' : ''}">
+                    <button class="w-7 h-7 rounded-xl border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${task.completed ? 'bg-emerald-500 border-emerald-500 text-slate-950' : 'border-slate-500 bg-slatecard-900'}">
+                      ${task.completed ? '<i class="fa-solid fa-check text-sm font-black"></i>' : ''}
+                    </button>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-bold ${task.completed ? 'line-through text-slate-400' : 'text-white'}">${task.title}</p>
+                      <p class="text-xs text-slate-300 mt-0.5">${task.detail}</p>
+                      ${showFreezeHighlight ? `
+                        <div class="mt-2 px-2.5 py-1.5 rounded-xl bg-sky-500/20 border border-sky-400/40 text-sky-200 text-xs font-semibold flex items-start gap-1.5">
+                          <i class="fa-solid fa-snowflake text-sky-300 mt-0.5 shrink-0"></i>
+                          <span>${task.freezeInstruction}</span>
+                        </div>
+                      ` : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // TAB 3: LIVE STOCK INVENTORY COUNTER
+    // =========================================================================
+    function updatePlantStock(plantId, delta) {
+      const plant = appState.plants.find(p => p.id === plantId);
+      if (!plant) return;
+      plant.stock = Math.max(0, plant.stock + delta);
+      saveState();
+      renderStockList();
+      renderPlants();
+      updateBadges();
+    }
+
+    function toggleAddStockForm() {
+      document.getElementById('addStockFormCard').classList.toggle('hidden');
+    }
+
+    function toggleLowStockOnly() {
+      appState.lowStockOnly = !appState.lowStockOnly;
+      const btn = document.getElementById('lowStockFilterBtn');
+      if (appState.lowStockOnly) {
+        btn.className = 'px-3.5 py-2.5 rounded-xl bg-amber-400 text-slate-950 border border-amber-400 text-xs font-extrabold shrink-0';
+      } else {
+        btn.className = 'px-3.5 py-2.5 rounded-xl bg-slatecard-800 border border-slate-700 text-xs font-bold text-slate-300 shrink-0';
+      }
+      renderStockList();
+    }
+
+    function addNewPlantItem() {
+      const name = document.getElementById('newPlantName').value.trim();
+      const bay = document.getElementById('newPlantBay').value.trim() || 'Yard General';
+      const zone = document.getElementById('newPlantZone').value;
+      const count = parseInt(document.getElementById('newPlantCount').value, 10) || 0;
+
+      if (!name) {
+        showToast('Enter a plant name first', 'fa-triangle-exclamation text-amber-400');
+        return;
+      }
+
+      const isBorderline = zone.includes('8');
+      const newPlant = {
+        id: 'plant-' + Date.now(),
+        commonName: name,
+        botanicalName: 'Custom Yard Entry',
+        zone: isBorderline ? `${zone} • Borderline` : zone,
+        hardinessStatus: isBorderline ? 'borderline' : 'hardy',
+        tags: isBorderline ? ['full-sun', 'freeze'] : ['hardy', 'full-sun'],
+        freezeSensitive: isBorderline,
+        freezeNote: isBorderline ? 'Protect during hard West Texas freezes.' : 'Hardy in Lubbock Zone 7a/7b.',
+        bay: bay,
+        sunSoil: 'Full Sun • Well-drained West Texas soil',
+        water: 'Check soil 2 inches deep; water deeply 1–2x/week',
+        blooms: 'Seasonal nursery stock',
+        size: 'See pot tag',
+        careTip: 'Added by yard crew. Keep watered and tagged in ' + bay + '.',
+        stock: Math.max(0, count)
+      };
+
+      appState.plants.unshift(newPlant);
+      saveState();
+
+      document.getElementById('newPlantName').value = '';
+      document.getElementById('newPlantBay').value = '';
+      document.getElementById('newPlantCount').value = '10';
+      toggleAddStockForm();
+
+      renderAll();
+      showToast(`Added ${name} (${count} units) to ${bay}`);
+    }
+
+    function renderStockList() {
+      const query = document.getElementById('stockSearchInput').value.trim().toLowerCase();
+      const totalUnits = appState.plants.reduce((sum, p) => sum + p.stock, 0);
+      const lowItems = appState.plants.filter(p => p.stock <= 3).length;
+
+      document.getElementById('totalStockCount').textContent = totalUnits;
+      document.getElementById('lowStockCount').textContent = lowItems;
+
+      const filtered = appState.plants.filter(p => {
+        if (appState.lowStockOnly && p.stock > 3) return false;
+        if (query) {
+          return `${p.commonName} ${p.bay} ${p.zone}`.toLowerCase().includes(query);
+        }
+        return true;
+      });
+
+      const container = document.getElementById('stockListContainer');
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="bg-slatecard-800 border border-slate-700 rounded-2xl p-6 text-center text-sm text-slate-400">No matching inventory items.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(plant => {
+        const isLow = plant.stock <= 3;
+        return `
+          <div class="bg-slatecard-800 border ${isLow ? 'border-amber-500/50' : 'border-slate-700/80'} rounded-2xl p-3.5 flex items-center justify-between gap-3">
+            <div class="min-w-0 flex-1" onclick="openPlantModal('${plant.id}')">
+              <div class="flex items-center gap-2">
+                <h4 class="font-extrabold text-sm sm:text-base text-white truncate">${plant.commonName}</h4>
+                ${isLow ? `<span class="shrink-0 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/40">Low</span>` : ''}
+              </div>
+              <p class="text-xs text-slate-400 truncate mt-0.5">${plant.bay} • ${plant.zone}</p>
+            </div>
+
+            <!-- Large Touch-Friendly +/- Counter -->
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="updatePlantStock('${plant.id}', -1)" class="w-11 h-11 rounded-xl bg-slatecard-700 hover:bg-red-950/70 border border-slate-600 text-white font-black text-lg flex items-center justify-center active:scale-90">
+                <i class="fa-solid fa-minus text-xs"></i>
+              </button>
+              <div class="w-11 text-center">
+                <span class="text-lg font-extrabold ${isLow ? 'text-amber-400' : 'text-white'}">${plant.stock}</span>
+              </div>
+              <button onclick="updatePlantStock('${plant.id}', 1)" class="w-11 h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-lg flex items-center justify-center active:scale-90 shadow-sm">
+                <i class="fa-solid fa-plus text-xs"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // TAB 4: TRUCK & DELIVERIES
+    // =========================================================================
+    function markTruckUnloaded(truckId) {
+      const truck = appState.vendorTrucks.find(t => t.id === truckId);
+      if (!truck || truck.status === 'unloaded') return;
+
+      truck.status = 'unloaded';
+      let totalAdded = 0;
+
+      truck.items.forEach(item => {
+        const plant = appState.plants.find(p => p.id === item.plantId);
+        if (plant) {
+          plant.stock += item.qty;
+          totalAdded += item.qty;
+        }
+      });
+
+      saveState();
+      renderAll();
+      showToast(`Unloaded ${truck.vendor}: +${totalAdded} plants added to Live Stock!`);
+    }
+
+    function toggleAddTicketForm() {
+      document.getElementById('addTicketFormCard').classList.toggle('hidden');
+    }
+
+    function addCustomerTicket() {
+      const customer = document.getElementById('ticketCustomerName').value.trim();
+      const vehicle = document.getElementById('ticketVehicle').value.trim() || 'Customer Pickup • Front Bay';
+      const items = document.getElementById('ticketItems').value.trim();
+
+      if (!customer || !items) {
+        showToast('Enter customer name & items to pull', 'fa-triangle-exclamation text-amber-400');
+        return;
+      }
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+      appState.customerTickets.unshift({
+        id: 'ticket-' + Date.now(),
+        customer,
+        vehicle,
+        items,
+        status: 'Pending Pull',
+        time: timeStr
+      });
+
+      saveState();
+      document.getElementById('ticketCustomerName').value = '';
+      document.getElementById('ticketVehicle').value = '';
+      document.getElementById('ticketItems').value = '';
+      toggleAddTicketForm();
+
+      renderTrucksAndTickets();
+      updateBadges();
+      showToast(`Load ticket added for ${customer}`);
+    }
+
+    function cycleTicketStatus(ticketId) {
+      const ticket = appState.customerTickets.find(t => t.id === ticketId);
+      if (!ticket) return;
+
+      const order = ['Pending Pull', 'Staged', 'Loaded'];
+      const nextIdx = (order.indexOf(ticket.status) + 1) % order.length;
+      ticket.status = order[nextIdx];
+
+      saveState();
+      renderTrucksAndTickets();
+      updateBadges();
+      showToast(`${ticket.customer}: Marked "${ticket.status}"`);
+    }
+
+    function renderTrucksAndTickets() {
+      // Render Vendor Trucks
+      const truckContainer = document.getElementById('vendorTrucksContainer');
+      truckContainer.innerHTML = appState.vendorTrucks.map(truck => {
+        const isUnloaded = truck.status === 'unloaded';
+        return `
+          <div class="bg-slatecard-800 border ${isUnloaded ? 'border-emerald-500/30 opacity-80' : 'border-amber-400/40'} rounded-2xl p-4 space-y-3 shadow-sm">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full ${isUnloaded ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-400/20 text-amber-300'}">
+                    ${isUnloaded ? 'UNLOADED & STOCKED' : truck.eta}
+                  </span>
+                  <span class="text-xs font-semibold text-slate-400">${truck.bay}</span>
+                </div>
+                <h3 class="font-extrabold text-base text-white mt-1">${truck.vendor}</h3>
+              </div>
+            </div>
+
+            <!-- Item Manifest -->
+            <div class="bg-slatecard-900/90 rounded-xl p-3 border border-slate-800 space-y-1.5">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Shipment Manifest</span>
+              ${truck.items.map(item => `
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-slate-200 font-medium">${item.name}</span>
+                  <span class="font-extrabold text-emerald-400">+${item.qty}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            ${isUnloaded ? `
+              <div class="w-full py-2.5 rounded-xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 text-xs font-extrabold text-center">
+                <i class="fa-solid fa-circle-check mr-1.5"></i> Inventory Updated in Live Stock
+              </div>
+            ` : `
+              <button onclick="markTruckUnloaded('${truck.id}')" class="w-full py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-md active:scale-[0.98] transition-all">
+                <i class="fa-solid fa-dolly mr-1.5"></i> Mark Unloaded & Add to Stock
+              </button>
+            `}
+          </div>
+        `;
+      }).join('');
+
+      // Render Customer Tickets
+      const ticketContainer = document.getElementById('customerTicketsContainer');
+      ticketContainer.innerHTML = appState.customerTickets.map(ticket => {
+        let badgeStyle = 'bg-amber-500/20 text-amber-300 border-amber-400/40';
+        let icon = 'fa-clock';
+        if (ticket.status === 'Staged') {
+          badgeStyle = 'bg-sky-500/20 text-sky-300 border-sky-400/40';
+          icon = 'fa-pallet';
+        } else if (ticket.status === 'Loaded') {
+          badgeStyle = 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40';
+          icon = 'fa-circle-check';
+        }
+
+        return `
+          <div class="bg-slatecard-800 border border-slate-700/90 rounded-2xl p-4 flex items-center justify-between gap-3">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <h4 class="font-extrabold text-sm text-white truncate">${ticket.customer}</h4>
+                <span class="text-[11px] text-slate-400 shrink-0">${ticket.time}</span>
+              </div>
+              <p class="text-xs text-emerald-300 font-semibold mt-0.5">${ticket.vehicle}</p>
+              <p class="text-xs text-slate-300 mt-1">${ticket.items}</p>
+            </div>
+
+            <button onclick="cycleTicketStatus('${ticket.id}')" class="shrink-0 px-3 py-2.5 rounded-xl border text-xs font-extrabold flex items-center gap-1.5 active:scale-95 transition-all ${badgeStyle}">
+              <i class="fa-solid ${icon}"></i>
+              <span>${ticket.status}</span>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // BADGES, RESET & INITIALIZATION
+    // =========================================================================
+    function updateBadges() {
+      const hasLowStock = appState.plants.some(p => p.stock <= 3);
+      document.getElementById('stockAlertBadge').classList.toggle('hidden', !hasLowStock);
+
+      const hasActiveTrucksOrLoads =
+        appState.vendorTrucks.some(t => t.status !== 'unloaded') ||
+        appState.customerTickets.some(t => t.status !== 'Loaded');
+      document.getElementById('truckPendingBadge').classList.toggle('hidden', !hasActiveTrucksOrLoads);
+    }
+
+    function openResetConfirm() {
+      document.getElementById('resetModal').classList.remove('hidden');
+    }
+
+    function closeResetConfirm() {
+      document.getElementById('resetModal').classList.add('hidden');
+    }
+
+    function confirmResetDemo() {
+      localStorage.removeItem(STORAGE_KEY);
+      appState = {
+        activeTab: appState.activeTab,
+        lookupFilter: 'all',
+        freezeMode: false,
+        lowStockOnly: false,
+        selectedPlantId: null,
+        plants: JSON.parse(JSON.stringify(DEFAULT_PLANTS)),
+        careTasks: JSON.parse(JSON.stringify(DEFAULT_CARE_TASKS)),
+        vendorTrucks: JSON.parse(JSON.stringify(DEFAULT_TRUCKS)),
+        customerTickets: JSON.parse(JSON.stringify(DEFAULT_TICKETS))
+      };
+      saveState();
+      closeResetConfirm();
+      setLookupFilter('all');
+      renderAll();
+      showToast('Demo reset to default Wolfe Nursery inventory');
+    }
+
+    function renderAll() {
+      updateFreezeUI();
+      renderPlants();
+      renderCareChecklist();
+      renderStockList();
+      renderTrucksAndTickets();
+      updateBadges();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      setLookupFilter(appState.lookupFilter || 'all');
+      switchTab(appState.activeTab || 'lookup');
+    });
+  </script>
+</body>
+</html>
+```
