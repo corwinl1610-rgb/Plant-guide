@@ -8,9 +8,9 @@
   "theme_color": "#0b1410",
   "icons": [
     {
-      "src": "https://corwinl1610-rgb.github.io/Plant-guide/icon.svg",
+      "src": "https://cdn-icons-png.flaticon.com/512/628/628283.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png"
     }
   ]
 }
